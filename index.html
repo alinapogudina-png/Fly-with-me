@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Полет Алладина Builder - ELT Workshop</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+        
+        body { font-family: 'Poppins', sans-serif; background-color: #fbd680; color: #e0e0ff; display: flex; padding: 20px; gap: 20px; height: 100vh; margin: 0; box-sizing: border-box; overflow: hidden; }
+        
+        .editor-panel, .preview-panel { background-color: rgba(25, 25, 45, 0.95); backdrop-filter: blur(10px); padding: 25px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); z-index: 1; }
+        .editor-panel { width: 45%; display: flex; flex-direction: column; overflow-y: auto; }
+        .preview-panel { width: 55%; display: flex; flex-direction: column; position: relative; }
+        
+        .editor-panel::-webkit-scrollbar { width: 8px; }
+        .editor-panel::-webkit-scrollbar-thumb { background: #d09a3e; border-radius: 4px; }
+        
+        h1 { color: #fbd680; font-weight: 800; font-size: 28px; margin: 0 0 5px 0; text-align: center; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 2px 10px rgba(251, 214, 128, 0.4);}
+        .subtitle { text-align: center; color: #a0a0c0; font-size: 12px; margin-bottom: 20px; letter-spacing: 0.5px;}
+        h3 { color: #fff; font-size: 15px; margin-bottom: 12px; border-bottom: 1px solid #4b4b6a; padding-bottom: 5px; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px;}
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 12px; color: #b5b5c3; text-transform: uppercase;}
+        .help-text { font-size: 11px; color: #4ae38c; margin-top: -4px; margin-bottom: 10px; display: block; text-transform: none; line-height: 1.4;}
+        input[type="text"], input[type="url"], input[type="number"], select, textarea { width: 100%; padding: 10px 15px; border-radius: 10px; border: 1px solid #4b4b6a; background-color: #1a1a2e; color: #fff; box-sizing: border-box; font-family: 'Poppins', sans-serif; font-size: 13px; transition: 0.3s; }
+        input[type="text"]:focus, input[type="url"]:focus, select:focus, textarea:focus, input[type="number"]:focus { border-color: #fbd680; outline: none; box-shadow: 0 0 10px rgba(251, 214, 128, 0.2); }
+        input[type="color"] { padding: 0; border: none; width: 100%; height: 36px; border-radius: 8px; cursor: pointer; background: transparent; }
+        input[type="range"] { width: 100%; accent-color: #fbd680; cursor: pointer; margin-top: 10px;}
+        textarea { resize: vertical; min-height: 100px; white-space: pre; }
+        
+        .flex-row { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; }
+        .flex-col { flex: 1; min-width: 120px; }
+        
+        .checkbox-label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; text-transform: none; color: #fff;}
+        .checkbox-label input { width: 18px; height: 18px; cursor: pointer; accent-color: #fbd680;}
+        .val-display { display: inline-block; background: #4b4b6a; padding: 2px 8px; border-radius: 5px; font-size: 11px; margin-left: 10px; color: #fff;}
+
+        #previewFrame { width: 100%; flex: 1; border: 2px dashed #fbd680; border-radius: 15px; background-color: #000;}
+        
+        button.gen-btn { background: linear-gradient(135deg, #d69e34, #fbd680); color: #1a1a2e; padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 800; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 5px 15px rgba(251, 214, 128, 0.4); margin-top: 20px;}
+        button.gen-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(251, 214, 128, 0.6); }
+        
+        #generated-code { height: 60px; margin-top: 10px; background: #1a1a2e; border-color: #4b4b6a; color: #4ae38c; font-family: monospace; font-size: 11px;}
+    </style>
+</head>
+<body>
+
+    <div class="editor-panel">
+        <h1 id="editor-title">ПОЛЕТ АЛЛАДИНА</h1>
+        <div class="subtitle">Alina Pogudina 2026 @ELT_workshop</div>
+        
+        <div class="flex-row">
+            <div class="form-group flex-col" style="flex:2">
+                <label>Название / Тема игры</label>
+                <input type="text" id="gameTitle" value="ПОЛЕТ АЛЛАДИНА" oninput="document.getElementById('editor-title').innerText = this.value || 'ПОЛЕТ АЛЛАДИНА'; debounceGenerate()">
+            </div>
+            <div class="form-group flex-col">
+                <label>Язык</label>
+                <select id="uiLang" onchange="debounceGenerate()">
+                    <option value="EN">English</option>
+                    <option value="RU">Русский</option>
+                    <option value="ES">Español</option>
+                    <option value="FR">Français</option>
+                    <option value="DE">Deutsch</option>
+                    <option value="IT">Italiano</option>
+                    <option value="PT">Português</option>
+                    <option value="TR">Türkçe</option>
+                    <option value="PL">Polski</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Текст кнопки СТАРТ</label>
+            <input type="text" id="startBtnText" value="FLY WITH ME!" oninput="debounceGenerate()">
+        </div>
+
+        <h3>Графика и Игровой процесс</h3>
+        <div class="form-group">
+            <label>Фон игры (Город)</label>
+            <input type="url" id="imgBg" value="https://i.postimg.cc/sXSHhgfk/60329e3d55a9480d0505617c3dccfbdd-7c56eb53-c372-4941-8def-d5d43b7906a0.jpg" oninput="debounceGenerate()">
+        </div>
+        
+        <div class="flex-row">
+            <div class="form-group flex-col" style="flex: 2;">
+                <label>Персонаж (Аладдин)</label>
+                <input type="url" id="imgChar" value="https://i.postimg.cc/2SrYjgGC/Besplatnye-materialy-dla-detej2.png" oninput="debounceGenerate()">
+            </div>
+            <div class="form-group flex-col">
+                <label>Предмет (Монетка)</label>
+                <input type="url" id="imgCoin" value="https://i.postimg.cc/pLDyHSvH/pngwing-com4.png" oninput="debounceGenerate()">
+            </div>
+        </div>
+        
+        <div class="flex-row">
+            <div class="form-group flex-col">
+                <label>Аватар в вопросе</label>
+                <input type="url" id="imgAvatar" value="https://i.postimg.cc/mD9P70Fn/ko-FEJna5.png" oninput="debounceGenerate()">
+            </div>
+            <div class="form-group flex-col">
+                <label>Звезды ночью (оверлей)</label>
+                <input type="url" id="imgStars" value="https://i.postimg.cc/tCDyqXsR/zvezdy.png" oninput="debounceGenerate()">
+            </div>
+        </div>
+
+        <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+            <label>Размер персонажа <span id="charSizeVal" class="val-display">30%</span></label>
+            <input type="range" id="charSize" min="10" max="60" value="30" oninput="updateVal('charSize', 'charSizeVal', '%'); debounceGenerate()">
+        </div>
+        
+        <div class="flex-row">
+            <div class="form-group flex-col">
+                <label>Жизней</label>
+                <input type="number" id="livesCount" value="3" min="1" max="10" oninput="debounceGenerate()">
+            </div>
+            <div class="form-group flex-col" style="flex: 2;">
+                <label>Иконка жизней</label>
+                <input type="url" id="imgLife" value="https://i.postimg.cc/KvL74jJr/pngwing-com-(80).png" oninput="debounceGenerate()">
+            </div>
+        </div>
+
+        <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+            <label class="checkbox-label" style="margin-bottom: 10px;">
+                <input type="checkbox" id="useTimer" onchange="debounceGenerate()"> Таймер на вопрос (сек)
+            </label>
+            <input type="number" id="timerSec" value="30" style="width: 100px; margin-bottom: 15px;" oninput="debounceGenerate()">
+            
+            <label class="checkbox-label">
+                <input type="checkbox" id="dayNightEffect" onchange="debounceGenerate()"> Эффект День-Ночь (смена фаз и звезды)
+            </label>
+        </div>
+
+        <h3>Дизайн Плашек и Шрифтов</h3>
+        <div class="flex-row">
+            <div class="form-group flex-col"><label>Фон вопроса</label><input type="color" id="colorQBox" value="#2c3e50" onchange="debounceGenerate()"></div>
+            <div class="form-group flex-col"><label>Фон ответов</label><input type="color" id="colorABox" value="#000000" onchange="debounceGenerate()"></div>
+            <div class="form-group flex-col"><label>Неон (рамка)</label><input type="color" id="neonColor" value="#f1c40f" onchange="debounceGenerate()"></div>
+        </div>
+        
+        <div class="form-group">
+            <label>Шрифт текстов</label>
+            <select id="fontFamily" onchange="debounceGenerate()">
+                <option value="'Montserrat', sans-serif">Montserrat</option>
+                <option value="'Russo One', sans-serif">Russo One</option>
+                <option value="'Comfortaa', sans-serif">Comfortaa</option>
+                <option value="'Jura', sans-serif">Jura</option>
+                <option value="'Kurale', serif">Kurale</option>
+                <option value="'Caveat', cursive">Caveat</option>
+                <option value="'Neucha', cursive">Neucha</option>
+                <option value="'Oswald', sans-serif">Oswald</option>
+                <option value="'Alice', serif">Alice</option>
+            </select>
+        </div>
+
+        <div class="flex-row" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+            <div class="form-group flex-col" style="margin:0;"><label>Размер Вопроса (px)</label><input type="number" id="qFontSize" value="28" oninput="debounceGenerate()"></div>
+            <div class="form-group flex-col" style="margin:0;"><label>Цвет Вопроса</label><input type="color" id="qColor" value="#ffffff" onchange="debounceGenerate()"></div>
+            <div class="form-group flex-col" style="margin:0; border-left: 1px solid #4b4b6a; padding-left:15px;"><label>Размер Ответов (px)</label><input type="number" id="aFontSize" value="20" oninput="debounceGenerate()"></div>
+            <div class="form-group flex-col" style="margin:0;"><label>Цвет Ответов</label><input type="color" id="aColor" value="#ffffff" onchange="debounceGenerate()"></div>
+        </div>
+
+        <h3>Задания (Викторина)</h3>
+        <div class="form-group">
+            <span class="help-text">
+                <b>ТИПЫ ОТВЕТОВ:</b><br>
+                1. <b>Выбор:</b> Варианты через <code>|</code> (Прав | Неправ)<br>
+                2. <b>Впиши:</b> Просто 1 правильное слово<br>
+                3. <b>Собери фразу:</b> Добавьте <code>ORDER: </code> (ORDER: I have a lamp)<br>
+                <b>МАТЕМАТИКА (LaTeX):</b> Оберните формулу в <code>$</code>. Пример: <code>$\sqrt{25} + x^2$</code>
+            </span>
+        </div>
+        <div class="flex-row">
+            <div class="form-group flex-col">
+                <label>ВОПРОСЫ (Столбик)</label>
+                <textarea id="qList" rows="6" oninput="debounceGenerate()">Who found the magic lamp?
+Write the missing word: I have a magic ___
+Put the words in correct order:
+Solve the equation: $x^2 = 16$. Find $x$.</textarea>
+            </div>
+            <div class="form-group flex-col" style="flex: 1.5;">
+                <label>ОТВЕТЫ (Форматы описаны выше)</label>
+                <textarea id="aList" rows="6" oninput="debounceGenerate()">Aladdin | Jafar | The Sultan | Jasmine
+lamp
+ORDER: Genie grants three wishes
+$x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
+            </div>
+        </div>
+
+        <h3>Звуки</h3>
+        <div class="flex-row">
+            <div class="form-group flex-col"><label>Музыка фона</label><input type="url" id="audioBg" value="" placeholder="Оставьте пустым, если не нужна" oninput="debounceGenerate()"></div>
+            <div class="form-group flex-col"><label>Сбор (Дзинь)</label><input type="url" id="audioDing" value="https://archive.org/download/tayna-raskryita--dzyin/tayna-raskryita--dzyin.mp3" oninput="debounceGenerate()"></div>
+        </div>
+        <div class="flex-row">
+            <div class="form-group flex-col"><label>Ошибка</label><input type="url" id="audioErr" value="https://archive.org/download/bu-bu--multyashnyiy-proval/bu-bu--multyashnyiy-proval.mp3" oninput="debounceGenerate()"></div>
+            <div class="form-group flex-col"><label>Победа</label><input type="url" id="audioWin" value="https://files.catbox.moe/8jacx9.mp3" oninput="debounceGenerate()"></div>
+        </div>
+
+        <h3>Финальные экраны</h3>
+        <div class="flex-row">
+            <div class="form-group flex-col"><label>Текст Победы</label><input type="text" id="winText" value="YOU ARE A TRUE HERO!" oninput="debounceGenerate()"></div>
+            <div class="form-group flex-col"><label>Картинка Победы</label><input type="url" id="imgWin" value="https://i.postimg.cc/P5THf0yT/Besplatnye-materialy-dla-detej.png" oninput="debounceGenerate()"></div>
+        </div>
+        <div class="flex-row">
+            <div class="form-group flex-col"><label>Текст Поражения</label><input type="text" id="loseText" value="YOU LOST!" oninput="debounceGenerate()"></div>
+            <div class="form-group flex-col"><label>Картинка Поражения</label><input type="url" id="imgLose" value="" oninput="debounceGenerate()"></div>
+        </div>
+
+        <button class="gen-btn" id="copyBtn" onclick="copyCode()">СГЕНЕРИРОВАТЬ IFRAME-КОД</button>
+        <textarea id="generated-code" readonly placeholder="Ваш код появится здесь..."></textarea>
+    </div>
+
+    <div class="preview-panel">
+        <h2 style="color: #fff; margin-top:0; font-size: 20px;">Предпросмотр</h2>
+        <iframe id="previewFrame" src="" frameborder="0" allow="autoplay"></iframe>
+    </div>
+
+    <script>
+        function updateVal(inputId, displayId, suffix) { document.getElementById(displayId).innerText = document.getElementById(inputId).value + suffix; }
+
+        function getInputs() {
+            let qLines = document.getElementById('qList').value.split('\n').map(s=>s.trim()).filter(s=>s);
+            let aLines = document.getElementById('aList').value.split('\n').map(s=>s.trim()).filter(s=>s);
+            let tasks = [];
+            let count = Math.min(qLines.length, aLines.length, 30);
+            
+            for(let i=0; i<count; i++) {
+                let ansLine = aLines[i];
+                if (ansLine.toUpperCase().startsWith('ORDER:')) {
+                    let phrase = ansLine.substring(6).trim();
+                    let words = phrase.split(/\s+/).filter(w => w);
+                    tasks.push({ q: qLines[i], type: 'order', correct: phrase, words: words });
+                } else {
+                    let opts = ansLine.split('|').map(o => o.trim()).filter(o => o !== '');
+                    if (opts.length === 1) {
+                        tasks.push({ q: qLines[i], type: 'input', correct: opts[0] });
+                    } else if (opts.length > 1) {
+                        tasks.push({ q: qLines[i], type: 'choice', correct: opts[0], wrongs: opts.slice(1, 4) });
+                    }
+                }
+            }
+            if(tasks.length === 0) tasks = [{q: "Demo", type: "choice", correct: "Yes", wrongs: ["No"]}];
+
+            return {
+                gameTitle: document.getElementById('gameTitle').value || "ПОЛЕТ АЛЛАДИНА",
+                lang: document.getElementById('uiLang').value,
+                startBtnText: document.getElementById('startBtnText').value,
+                fontFamily: document.getElementById('fontFamily').value,
+                qFontSize: document.getElementById('qFontSize').value,
+                aFontSize: document.getElementById('aFontSize').value,
+                qColor: document.getElementById('qColor').value,
+                aColor: document.getElementById('aColor').value,
+                neonColor: document.getElementById('neonColor').value,
+                colorQBox: document.getElementById('colorQBox').value,
+                colorABox: document.getElementById('colorABox').value,
+                imgBg: document.getElementById('imgBg').value,
+                imgChar: document.getElementById('imgChar').value,
+                imgCoin: document.getElementById('imgCoin').value,
+                imgAvatar: document.getElementById('imgAvatar').value,
+                imgStars: document.getElementById('imgStars').value,
+                charSize: document.getElementById('charSize').value,
+                imgLife: document.getElementById('imgLife').value,
+                livesCount: parseInt(document.getElementById('livesCount').value) || 3,
+                audioBg: document.getElementById('audioBg').value,
+                audioDing: document.getElementById('audioDing').value,
+                audioErr: document.getElementById('audioErr').value,
+                audioWin: document.getElementById('audioWin').value,
+                imgWin: document.getElementById('imgWin').value,
+                imgLose: document.getElementById('imgLose').value,
+                winText: document.getElementById('winText').value,
+                loseText: document.getElementById('loseText').value,
+                useTimer: document.getElementById('useTimer').checked,
+                dayNightEffect: document.getElementById('dayNightEffect').checked,
+                timerSec: parseInt(document.getElementById('timerSec').value) || 30,
+                tasks: tasks
+            };
+        }
+
+        function generateCode() {
+            const conf = getInputs();
+
+            let hexToRgb = (hex) => {
+                if(!hex || hex.length !== 7) return 'rgba(0,0,0,0.95)';
+                let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+                return `rgba(${r}, ${g}, ${b}, 0.95)`;
+            };
+            let aBoxRgba = hexToRgb(conf.colorABox);
+
+            const innerHTML = `<!DOCTYPE html>
+<html lang="${conf.lang.toLowerCase()}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- MATH JAX / KATEX -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"><\/script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"><\/script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Alice&family=Amatic+SC:wght@700&family=Caveat:wght@700&family=Comfortaa:wght@700&family=Jura:wght@700&family=Kurale&family=Montserrat:wght@600;800&family=Neucha&family=Oswald:wght@500;700&family=Russo+One&display=swap');
+    
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; touch-action: none; font-family: ${conf.fontFamily}; color: #fff;}
+    * { box-sizing: border-box !important; -webkit-tap-highlight-color: transparent;}
+    
+    #game-bg { position: absolute; inset: 0; width: 150vw; height: 100%; background: url('${conf.imgBg}') left center/cover no-repeat; z-index: 0; will-change: transform;}
+    
+    /* ЭФФЕКТ ДЕНЬ/НОЧЬ И ЗВЕЗДЫ */
+    #night-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, #000033, #000011); opacity: 0; z-index: 1; pointer-events: none; mix-blend-mode: multiply; transition: opacity 1.5s ease-in-out; display: ${conf.dayNightEffect ? 'block' : 'none'};}
+    
+    /* Враппер звезд отвечает за скрытие/появление всей картинки */
+    #stars-wrapper { position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity 1.5s ease-in-out; display: ${conf.dayNightEffect ? 'block' : 'none'}; }
+    
+    /* Псевдоэлемент отображает саму картинку-оверлей и мерцает */
+    #stars-wrapper::after { 
+        content: ''; 
+        position: absolute; 
+        inset: 0; 
+        background: url('${conf.imgStars}') center/cover; 
+        animation: starPulse 1.2s infinite alternate ease-in-out; 
+    }
+    @keyframes starPulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
+
+    #world-container { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 0 5%;}
+
+    /* UI TOP BAR */
+    #ui-bar { position: absolute; top: 0; left: 0; right: 0; padding: 15px 20px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 50; flex-wrap: wrap; gap: 10px;}
+    .lives-box { display: flex; gap: 10px; flex-wrap: wrap; max-width: 40%;}
+    .life-icon { width: 40px; height: 40px; background: url('${conf.imgLife}') center/contain no-repeat; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6)); transition: 0.3s;}
+    .life-icon.lost { opacity: 0.3; filter: grayscale(1) drop-shadow(0 0 0 transparent); transform: scale(0.8); }
+    
+    .right-controls { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: flex-end;}
+    .counter-box, .timer-box, .coin-box { font-size: 24px; font-weight: 800; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 2px 5px rgba(0,0,0,0.8); background: rgba(0,0,0,0.4); padding: 5px 15px; border-radius: 15px;}
+    .timer-box { display: ${conf.useTimer ? 'block' : 'none'}; }
+    .btn-audio { background: rgba(0,0,0,0.5); border: 2px solid #fff; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; transition: 0.2s;}
+
+    /* СЧЕТЧИК МОНЕТ */
+    .coin-box { display: flex; align-items: center; gap: 8px; border: 2px solid ${conf.neonColor}; box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 10px ${conf.neonColor}; transition: 0.2s;}
+    .coin-icon-small { height: 26px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));}
+    .coin-bounce { animation: popCoin 0.3s ease-out; }
+    @keyframes popCoin { 50% { transform: scale(1.2); filter: brightness(1.5); } }
+
+    /* ПЕРСОНАЖ */
+    #character-wrapper { position: relative; width: ${conf.charSize}%; max-width: ${conf.charSize * 10}px; height: 40vh; animation: hoverBob 3s infinite ease-in-out; z-index: 30; }
+    #character { width: 100%; height: 100%; background: url('${conf.imgChar}') center/contain no-repeat; filter: drop-shadow(0 0 15px rgba(241, 196, 15, 0.6)) drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transition: filter 0.3s;}
+    #character-wrapper::after { content: ''; position: absolute; right: 80%; top: 50%; width: 100px; height: 40px; background: radial-gradient(ellipse, rgba(255,215,0,0.8) 0%, transparent 70%); filter: blur(5px); opacity: 0; transform: scaleX(0); transform-origin: right; transition: 0.5s; z-index: -1; pointer-events: none; }
+    
+    .char-flying { transform: translateY(-20px) rotate(5deg) scale(1.05); animation: none !important;}
+    .char-flying::after { opacity: 1 !important; transform: scaleX(1) !important; animation: sparkles 0.5s infinite alternate;}
+
+    .char-flash-gold #character { filter: brightness(1.5) drop-shadow(0 0 40px gold) drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transform: scale(1.1); }
+    .char-flash-red #character { filter: brightness(0.8) sepia(1) hue-rotate(-50deg) saturate(5) drop-shadow(0 0 30px red); transform: scale(0.9) rotate(-10deg); }
+
+    @keyframes sparkles { 0% { opacity: 0.5; filter: blur(4px); } 100% { opacity: 1; filter: blur(8px); } }
+    @keyframes hoverBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
+
+    /* МОНЕТКА */
+    #coin { position: absolute; width: 50px; height: 50px; background: url('${conf.imgCoin}') center/contain no-repeat; z-index: 25; top: 40%; left: 110vw; opacity: 0; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); }
+    @keyframes flyCoin { 0% { left: 110vw; opacity: 1; transform: scale(1) rotate(0deg); } 60% { left: calc(5% + ${conf.charSize/2}%); opacity: 1; transform: scale(1) rotate(-360deg); } 65% { left: calc(5% + ${conf.charSize/2}%); opacity: 0; transform: scale(2.5) rotate(-380deg); filter: brightness(2); } 100% { left: -20vw; opacity: 0; } }
+
+    /* ЗОНА ВОПРОСА */
+    #quiz-container { width: calc(90% - ${conf.charSize}%); max-width: 600px; display: flex; flex-direction: column; gap: 20px; opacity: 0; transform: translateX(50px); transition: 0.5s ease-out; pointer-events: none; margin-top: ${conf.imgAvatar ? '40px' : '0'};}
+    #quiz-container.show { opacity: 1; transform: translateX(0); pointer-events: auto;}
+    
+    #question-box { position: relative; width: 100%; padding: ${conf.imgAvatar ? '50px' : '25px'} 30px 25px; border-radius: 20px; text-align: center; background: ${conf.colorQBox}; box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px ${conf.neonColor}; border: 2px solid ${conf.neonColor}; min-height: 120px; display: flex; align-items: center; justify-content: center;}
+    #quiz-avatar { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid ${conf.neonColor}; box-shadow: 0 0 15px ${conf.neonColor}, 0 5px 15px rgba(0,0,0,0.6); background: #fff;}
+    #question-text { font-size: ${conf.qFontSize}px; color: ${conf.qColor}; font-weight: 800; text-shadow: 0 2px 5px rgba(0,0,0,0.8); line-height: 1.3; margin: 0; }
+    
+    /* ОТВЕТЫ */
+    #answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%;}
+    .answer-btn { background: ${aBoxRgba}; border: 2px solid ${conf.neonColor}; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; font-size: ${conf.aFontSize}px; color: ${conf.aColor}; font-weight: 800; box-shadow: 0 5px 15px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.5); text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+    .answer-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px ${conf.neonColor}, inset 0 0 10px ${conf.neonColor}; background: ${conf.colorABox}; filter: brightness(1.2); }
+    
+    /* ТИП: ВВОД ТЕКСТА */
+    .input-task { display: flex; gap: 10px; width: 100%; grid-column: 1 / -1; justify-content: center;}
+    .input-task input { flex: 1; padding: 15px; border-radius: 15px; border: 2px solid ${conf.neonColor}; background: rgba(0,0,0,0.6); color: ${conf.aColor}; font-size: ${conf.aFontSize}px; font-family: inherit; text-align: center; outline: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);}
+    .input-task button { padding: 15px 30px; border-radius: 15px; background: ${aBoxRgba}; color: ${conf.aColor}; border: 2px solid ${conf.neonColor}; cursor: pointer; font-size: ${conf.aFontSize}px; font-weight: bold; font-family: inherit; transition: 0.2s;}
+    .input-task button:hover { background: ${conf.colorABox}; box-shadow: 0 0 15px ${conf.neonColor};}
+
+    /* ТИП: СБОРКА ФРАЗЫ */
+    .order-task { display: flex; flex-direction: column; gap: 15px; width: 100%; grid-column: 1 / -1;}
+    .order-drop { min-height: 60px; border: 2px dashed ${conf.neonColor}; border-radius: 15px; display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); transition: 0.3s;}
+    .order-pool { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; min-height: 60px;}
+    .order-word { padding: 10px 15px; background: ${aBoxRgba}; color: ${conf.aColor}; border: 1px solid ${conf.neonColor}; border-radius: 10px; cursor: pointer; user-select: none; transition: 0.2s; font-size: calc(${conf.aFontSize}px * 0.9); font-weight: bold; box-shadow: 0 3px 8px rgba(0,0,0,0.5);}
+    .order-word:hover { transform: scale(1.1) translateY(-2px); filter: brightness(1.2); }
+
+    /* ЭФФЕКТЫ */
+    .correct-anim { border-color: #2ecc71 !important; box-shadow: 0 0 25px #2ecc71, inset 0 0 15px #2ecc71 !important; background: rgba(46, 204, 113, 0.4) !important;}
+    .wrong-anim { border-color: #e74c3c !important; box-shadow: 0 0 25px #e74c3c, inset 0 0 15px #e74c3c !important; background: rgba(231, 76, 60, 0.4) !important; animation: shake 0.4s;}
+    @keyframes shake { 0%, 100%{transform:translateX(0);} 25%{transform:translateX(-10px);} 75%{transform:translateX(10px);} }
+
+    /* ЭКРАНЫ */
+    .elt-screen { position: absolute !important; inset: 0 !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; padding: 20px !important; z-index: 1000 !important; transition: opacity 0.5s !important; background: rgba(0,0,0,0.3); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);}
+    .elt-hidden { display: none !important; opacity: 0 !important; pointer-events: none !important;}
+    .screen-img { width: 90vw; max-width: 800px; height: 55vh; min-height: 400px; object-fit: contain; margin-bottom: 30px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8)); animation: floatImg 3s ease-in-out infinite; }
+    @keyframes floatImg { 0%, 100%{transform:translateY(0);} 50%{transform:translateY(-20px);} }
+    .elt-title { color: #fff; font-size: clamp(35px, 6vw, 60px); font-weight: 900; margin-bottom: 40px; text-align: center; text-transform: uppercase; text-shadow: 0 0 20px ${conf.neonColor}, 0 5px 10px rgba(0,0,0,0.8);}
+    .elt-btn-start { font-family: inherit; font-weight: 900; font-size: 32px; padding: 20px 60px; cursor: pointer; transition: 0.3s; background: linear-gradient(135deg, #f1c40f, #e67e22); color: #fff; border: 3px solid #fff; border-radius: 30px; box-shadow: 0 10px 30px rgba(230, 126, 34, 0.6); text-transform: uppercase; }
+    .elt-btn-start:hover { transform: scale(1.1); filter: brightness(1.2); }
+
+    @media (max-width: 768px) {
+        #world-container { flex-direction: column; justify-content: center; padding-top: 80px;}
+        #character-wrapper { height: 25vh; margin-bottom: 20px; width: 50%; max-width: 200px;}
+        #character-wrapper::after { display: none; } 
+        #quiz-container { width: 95%; max-width: none; margin-top: ${conf.imgAvatar ? '30px' : '0'};}
+        #answers-grid { grid-template-columns: 1fr; }
+        .answer-btn, .input-task input, .input-task button, .order-word { padding: 10px; font-size: calc(${conf.aFontSize}px * 0.8);}
+        #question-text { font-size: calc(${conf.qFontSize}px * 0.8); }
+        #question-box { padding: ${conf.imgAvatar ? '40px' : '15px'} 15px 15px; min-height: 80px;}
+        #quiz-avatar { width: 70px; height: 70px; top: -35px; }
+        .screen-img { height: 40vh; min-height: 250px; }
+        .counter-box, .timer-box, .coin-box { font-size: 18px; padding: 5px 10px;}
+    }
+</style>
+</head>
+<body>
+
+<div id="game-bg"></div>
+<div id="night-overlay"></div>
+<div id="stars-wrapper"></div>
+
+<div id="world-container">
+    <div id="ui-bar">
+        <div class="lives-box" id="lives-box"></div>
+        <div class="right-controls">
+            <div class="coin-box" id="coin-counter-box"><img src="${conf.imgCoin}" class="coin-icon-small"><span id="coins-text">0</span></div>
+            <div class="counter-box" id="q-counter"></div>
+            <div class="timer-box" id="timer">00:00</div>
+            <div class="btn-audio" id="btn-audio">🎵</div>
+        </div>
+    </div>
+
+    <div id="character-wrapper"><div id="character"></div></div>
+    <div id="coin"></div>
+    
+    <div id="quiz-container">
+        <div id="question-box">
+            ${conf.imgAvatar ? `<img src="${conf.imgAvatar}" id="quiz-avatar">` : ''}
+            <p id="question-text"></p>
+        </div>
+        <div id="answers-grid"></div>
+    </div>
+</div>
+
+<div id="screen-start" class="elt-screen">
+    <div class="elt-title">${conf.gameTitle}</div>
+    <button class="elt-btn-start" id="btn-start">${conf.startBtnText}</button>
+</div>
+
+<div id="screen-over" class="elt-screen elt-hidden">
+    ${conf.imgLose ? `<img src="${conf.imgLose}" class="screen-img" style="animation: none; filter: grayscale(1) drop-shadow(0 0 20px red);">` : ''}
+    <div class="elt-title" style="color: #e74c3c; text-shadow: 0 0 20px red;">${conf.loseText}</div>
+    <button class="elt-btn-start" id="btn-try">RESTART</button>
+</div>
+
+<div id="screen-win" class="elt-screen elt-hidden">
+    ${conf.imgWin ? `<img src="${conf.imgWin}" class="screen-img">` : ''}
+    <div class="elt-title" style="color: #fbd680; text-shadow: 0 0 20px gold;">${conf.winText}</div>
+    <button class="elt-btn-start" id="btn-win-restart">PLAY AGAIN</button>
+</div>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    const dict = { 
+        EN: { restart: "PLAY AGAIN" }, 
+        RU: { restart: "ЗАНОВО" }, 
+        ES: { restart: "REINICIAR" }, 
+        FR: { restart: "REJOUER" },
+        DE: { restart: "NEUSTART" },
+        IT: { restart: "RIPROVA" },
+        PT: { restart: "JOGAR NOVAMENTE" },
+        TR: { restart: "TEKRAR OYNA" },
+        PL: { restart: "ZAGRAJ PONOWNIE" }
+    };
+    const lang = dict['${conf.lang}'] || dict['EN'];
+    document.getElementById('btn-win-restart').innerText = lang.restart;
+    document.getElementById('btn-try').innerText = lang.restart;
+
+    const TASKS = ${JSON.stringify(conf.tasks)};
+    const USE_TIMER = ${conf.useTimer};
+    const TIME_LIMIT = ${conf.timerSec};
+    const MAX_LIVES = ${conf.livesCount};
+    const DAY_NIGHT = ${conf.dayNightEffect};
+    
+    let currentLvl = 0, lives = MAX_LIVES, timerInt = null, timeLeft = TIME_LIMIT, isTransitioning = false, coinsCollected = 0;
+    
+    const sfxBg = '${conf.audioBg}' ? new Audio('${conf.audioBg}') : null; 
+    if(sfxBg) { sfxBg.loop = true; sfxBg.volume = 0.3; }
+    const sfxDing = '${conf.audioDing}' ? new Audio('${conf.audioDing}') : null; 
+    if(sfxDing) sfxDing.volume = 0.8;
+    const sfxErr = '${conf.audioErr}' ? new Audio('${conf.audioErr}') : null; 
+    if(sfxErr) sfxErr.volume = 0.8;
+    const sfxWin = '${conf.audioWin}' ? new Audio('${conf.audioWin}') : null; 
+    if(sfxWin) sfxWin.volume = 0.9;
+    
+    let isMuted = false;
+
+    const bgEl = document.getElementById('game-bg');
+    const nightOverlay = document.getElementById('night-overlay');
+    const starsLayer = document.getElementById('stars-wrapper');
+    const charWrap = document.getElementById('character-wrapper');
+    const coinEl = document.getElementById('coin');
+    const quizCont = document.getElementById('quiz-container');
+    const qText = document.getElementById('question-text');
+    const aGrid = document.getElementById('answers-grid');
+    const livesBox = document.getElementById('lives-box');
+
+    document.getElementById('btn-start').addEventListener('click', startGame);
+    document.getElementById('btn-try').addEventListener('click', startGame);
+    document.getElementById('btn-win-restart').addEventListener('click', startGame);
+    
+    document.getElementById('btn-audio').addEventListener('click', (e) => {
+        isMuted = !isMuted;
+        e.target.innerText = isMuted ? '🔇' : '🎵';
+        if(isMuted) { 
+            if(sfxBg) sfxBg.pause(); 
+            if(sfxWin) sfxWin.pause(); 
+        } else if(document.getElementById('screen-win').classList.contains('elt-hidden')) { 
+            if(sfxBg) sfxBg.play().catch(()=>{}); 
+        }
+    });
+
+    function buildLives() {
+        livesBox.innerHTML = '';
+        for(let i=0; i<MAX_LIVES; i++) { let d = document.createElement('div'); d.className = 'life-icon'; livesBox.appendChild(d); }
+    }
+
+    function updateLives() {
+        for(let i=0; i<MAX_LIVES; i++) { if(i < lives) livesBox.children[i].classList.remove('lost'); else livesBox.children[i].classList.add('lost'); }
+    }
+
+    function updateCoins() {
+        document.getElementById('coins-text').innerText = coinsCollected;
+        let b = document.getElementById('coin-counter-box');
+        b.classList.remove('coin-bounce'); void b.offsetWidth; b.classList.add('coin-bounce');
+    }
+
+    function updateDayNight() {
+        if(!DAY_NIGHT) return;
+        // Ритм: 2 вопроса день, 2 вопроса ночь (по кругу)
+        let isNight = (currentLvl % 4 >= 2);
+        nightOverlay.style.opacity = isNight ? '0.8' : '0';
+        starsLayer.style.opacity = isNight ? '1' : '0';
+    }
+
+    function startGame() {
+        document.querySelectorAll('.elt-screen').forEach(el => el.classList.add('elt-hidden'));
+        
+        charWrap.style.animation = 'hoverBob 3s infinite ease-in-out';
+        charWrap.style.transition = 'transform 0.8s ease-in-out';
+        charWrap.style.transform = 'none';
+        void charWrap.offsetWidth;
+
+        currentLvl = 0; lives = MAX_LIVES; isTransitioning = false; coinsCollected = 0; 
+        updateCoins(); buildLives(); updateLives(); updateDayNight();
+        
+        if(sfxWin) { sfxWin.pause(); sfxWin.currentTime = 0; }
+        if(!isMuted && sfxBg) sfxBg.play().catch(()=>{});
+        
+        flyToNext(true, false);
+    }
+
+    function startLevelTimer() {
+        if(!USE_TIMER) return;
+        timeLeft = TIME_LIMIT; updateTimerDisplay();
+        clearInterval(timerInt); timerInt = setInterval(() => {
+            if(isTransitioning) return;
+            timeLeft--; updateTimerDisplay();
+            if(timeLeft <= 0) { clearInterval(timerInt); processWrong(null); }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        document.getElementById('timer').innerText = Math.floor(timeLeft / 60).toString().padStart(2, '0') + ':' + (timeLeft % 60).toString().padStart(2, '0');
+        document.getElementById('timer').style.color = timeLeft <= 5 ? '#e74c3c' : '#fff';
+    }
+
+    function flyToNext(isFirst = false, isWinFlight = false) {
+        isTransitioning = true; clearInterval(timerInt);
+        quizCont.classList.remove('show');
+        
+        updateDayNight();
+
+        bgEl.style.transition = 'none'; bgEl.style.transform = 'translateX(0)';
+        charWrap.classList.add('char-flying');
+        void bgEl.offsetWidth;
+
+        bgEl.style.transition = 'transform 3.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        bgEl.style.transform = 'translateX(-50vw)';
+
+        if(!isFirst) {
+            coinEl.style.animation = 'none'; void coinEl.offsetWidth;
+            coinEl.style.animation = 'flyCoin 3.5s linear forwards';
+            setTimeout(() => {
+                if(!isMuted && sfxDing) { sfxDing.currentTime = 0; sfxDing.play().catch(()=>{}); }
+                charWrap.classList.add('char-flash-gold');
+                coinsCollected++; updateCoins();
+                setTimeout(() => charWrap.classList.remove('char-flash-gold'), 500);
+            }, 2100);
+        }
+
+        setTimeout(() => {
+            charWrap.classList.remove('char-flying');
+            if (isWinFlight) winGame(); else showQuestion();
+        }, 3500);
+    }
+
+    function showQuestion() {
+        document.getElementById('q-counter').innerText = (currentLvl + 1) + ' / ' + TASKS.length;
+        let task = TASKS[currentLvl]; qText.innerText = task.q; aGrid.innerHTML = '';
+        
+        if (task.type === 'choice') {
+            let options = [{t: task.correct, c: true}];
+            task.wrongs.forEach(w => options.push({t: w, c: false}));
+            options.sort(() => Math.random() - 0.5);
+            options.forEach(opt => {
+                let btn = document.createElement('div'); btn.className = 'answer-btn'; btn.innerText = opt.t;
+                btn.onclick = () => checkAnswer(btn, opt.c);
+                aGrid.appendChild(btn);
+            });
+        } 
+        else if (task.type === 'input') {
+            aGrid.innerHTML = \`<div class="input-task"><input type="text" id="t-inp" placeholder="???"><button id="t-btn">OK</button></div>\`;
+            let inp = document.getElementById('t-inp'), btn = document.getElementById('t-btn');
+            let check = () => {
+                let val = inp.value.trim();
+                if(!val) return;
+                checkAnswer(btn, val.toLowerCase() === task.correct.toLowerCase());
+            };
+            btn.onclick = check; inp.onkeypress = (e) => { if(e.key === 'Enter') check(); };
+            setTimeout(() => inp.focus(), 500);
+        }
+        else if (task.type === 'order') {
+            aGrid.innerHTML = \`<div class="order-task"><div class="order-drop" id="o-drop"></div><div class="order-pool" id="o-pool"></div></div>\`;
+            let drop = document.getElementById('o-drop'), pool = document.getElementById('o-pool');
+            [...task.words].sort(() => Math.random() - 0.5).forEach(w => {
+                let b = document.createElement('div'); b.className = 'order-word'; b.innerText = w;
+                b.onclick = () => {
+                    (b.parentElement === pool ? drop : pool).appendChild(b);
+                    if(drop.children.length === task.words.length) {
+                        let ans = Array.from(drop.children).map(c=>c.innerText).join(' ');
+                        checkAnswer(drop, ans.toLowerCase() === task.correct.toLowerCase());
+                    }
+                };
+                pool.appendChild(b);
+            });
+        }
+        
+        setTimeout(() => {
+            if(window.renderMathInElement) {
+                renderMathInElement(quizCont, {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "$", right: "$", display: false},
+                        {left: "\\\\(", right: "\\\\)", display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }, 50);
+
+        quizCont.classList.add('show');
+        isTransitioning = false; startLevelTimer();
+    }
+
+    function checkAnswer(uiEl, isCorrect) {
+        if(isTransitioning) return;
+        isTransitioning = true; clearInterval(timerInt);
+        
+        if(isCorrect) {
+            uiEl.classList.add('correct-anim');
+            setTimeout(() => { flyToNext(false, ++currentLvl >= TASKS.length); }, 600);
+        } else {
+            processWrong(uiEl);
+        }
+    }
+
+    function processWrong(uiEl) {
+        isTransitioning = true; clearInterval(timerInt);
+        if(uiEl) uiEl.classList.add('wrong-anim');
+        if(!isMuted && sfxErr) { sfxErr.currentTime = 0; sfxErr.play().catch(()=>{}); }
+        
+        charWrap.classList.add('char-flash-red');
+        setTimeout(() => charWrap.classList.remove('char-flash-red'), 600);
+
+        lives--; updateLives();
+        
+        if(lives <= 0) {
+            setTimeout(() => {
+                charWrap.style.animation = 'none';
+                void charWrap.offsetWidth;
+                
+                charWrap.style.transition = 'transform 1.5s cubic-bezier(0.5, 0, 1, 1)';
+                charWrap.style.transform = 'translateY(150vh) rotate(540deg)';
+                
+                setTimeout(gameOver, 1600);
+            }, 600);
+        } else {
+            setTimeout(() => {
+                if(uiEl) uiEl.classList.remove('wrong-anim');
+                let t = TASKS[currentLvl];
+                if(t.type === 'input') document.getElementById('t-inp').value = '';
+                if(t.type === 'order') Array.from(document.getElementById('o-drop').children).forEach(c => document.getElementById('o-pool').appendChild(c));
+                
+                isTransitioning = false; startLevelTimer();
+            }, 800);
+        }
+    }
+
+    function gameOver() {
+        clearInterval(timerInt); quizCont.classList.remove('show');
+        document.getElementById('screen-over').classList.remove('elt-hidden');
+    }
+
+    function winGame() {
+        clearInterval(timerInt); quizCont.classList.remove('show');
+        if(sfxBg) sfxBg.pause(); 
+        if(!isMuted && sfxWin) { sfxWin.currentTime = 0; sfxWin.play().catch(()=>{}); }
+        document.getElementById('screen-win').classList.remove('elt-hidden');
+    }
+});
+<\/script>
+</body>
+</html>`;
+
+            const escapedHTML = innerHTML.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+            document.getElementById('generated-code').value = `<iframe style="width: 100%; height: 100%; border: none; background: transparent;" allowtransparency="true" srcdoc="${escapedHTML}"></iframe>`;
+            document.getElementById('previewFrame').srcdoc = innerHTML;
+        }
+
+        function copyCode() {
+            generateCode(); 
+            document.getElementById('generated-code').select(); document.execCommand('copy');
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = 'СКОПИРОВАНО!'; btn.style.background = '#2ecc71'; btn.style.color = '#fff';
+            setTimeout(() => { btn.innerText = 'СГЕНЕРИРОВАТЬ IFRAME-КОД'; btn.style.background = 'linear-gradient(135deg, #d69e34, #fbd680)'; btn.style.color = '#1a1a2e'; }, 2000);
+        }
+
+        let previewTimeout;
+        function debounceGenerate() { clearTimeout(previewTimeout); previewTimeout = setTimeout(generateCode, 800); }
+
+        document.querySelectorAll('input:not([type="range"]), select, textarea, input[type="checkbox"]').forEach(el => {
+            el.addEventListener('input', debounceGenerate);
+            el.addEventListener('change', debounceGenerate);
+        });
+
+        updateVal('charSize', 'charSizeVal', '%');
+        debounceGenerate();
+    </script>
+</body>
+</html>
