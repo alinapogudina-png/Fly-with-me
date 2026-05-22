@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Полет Алладина Builder - ELT Workshop</title>
+    <title>Полет на ковре-самолете Builder - ELT Workshop</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
         
@@ -47,13 +47,13 @@
 <body>
 
     <div class="editor-panel">
-        <h1 id="editor-title">ПОЛЕТ АЛЛАДИНА</h1>
+        <h1 id="editor-title">ПОЛЕТ НА КОВРЕ-САМОЛЕТЕ</h1>
         <div class="subtitle">Alina Pogudina 2026 @ELT_workshop</div>
         
         <div class="flex-row">
             <div class="form-group flex-col" style="flex:2">
                 <label>Название / Тема игры</label>
-                <input type="text" id="gameTitle" value="ПОЛЕТ АЛЛАДИНА" oninput="document.getElementById('editor-title').innerText = this.value || 'ПОЛЕТ АЛЛАДИНА'; debounceGenerate()">
+                <input type="text" id="gameTitle" value="ПОЛЕТ НА КОВРЕ-САМОЛЕТЕ" oninput="document.getElementById('editor-title').innerText = this.value || 'ПОЛЕТ НА КОВРЕ-САМОЛЕТЕ'; debounceGenerate()">
             </div>
             <div class="form-group flex-col">
                 <label>Язык</label>
@@ -84,7 +84,7 @@
         
         <div class="flex-row">
             <div class="form-group flex-col" style="flex: 2;">
-                <label>Персонаж (Аладдин)</label>
+                <label>Персонаж</label>
                 <input type="url" id="imgChar" value="https://i.postimg.cc/2SrYjgGC/Besplatnye-materialy-dla-detej2.png" oninput="debounceGenerate()">
             </div>
             <div class="form-group flex-col">
@@ -243,7 +243,7 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
             if(tasks.length === 0) tasks = [{q: "Demo", type: "choice", correct: "Yes", wrongs: ["No"]}];
 
             return {
-                gameTitle: document.getElementById('gameTitle').value || "ПОЛЕТ АЛЛАДИНА",
+                gameTitle: document.getElementById('gameTitle').value || "ПОЛЕТ НА КОВРЕ-САМОЛЕТЕ",
                 lang: document.getElementById('uiLang').value,
                 startBtnText: document.getElementById('startBtnText').value,
                 fontFamily: document.getElementById('fontFamily').value,
@@ -305,13 +305,11 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
     
     #game-bg { position: absolute; inset: 0; width: 150vw; height: 100%; background: url('${conf.imgBg}') left center/cover no-repeat; z-index: 0; will-change: transform;}
     
-    /* ЭФФЕКТ ДЕНЬ/НОЧЬ И ЗВЕЗДЫ */
+    /* ЭФФЕКТ ДЕНЬ/НОЧЬ И ЗВЕЗДЫ - ТЕПЕРЬ ОНИ ВНУТРИ ФОНА И ДВИЖУТСЯ С НИМ */
     #night-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, #000033, #000011); opacity: 0; z-index: 1; pointer-events: none; mix-blend-mode: multiply; transition: opacity 1.5s ease-in-out; display: ${conf.dayNightEffect ? 'block' : 'none'};}
     
-    /* Враппер звезд отвечает за скрытие/появление всей картинки */
     #stars-wrapper { position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity 1.5s ease-in-out; display: ${conf.dayNightEffect ? 'block' : 'none'}; }
     
-    /* Псевдоэлемент отображает саму картинку-оверлей и мерцает */
     #stars-wrapper::after { 
         content: ''; 
         position: absolute; 
@@ -415,9 +413,11 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
 </head>
 <body>
 
-<div id="game-bg"></div>
-<div id="night-overlay"></div>
-<div id="stars-wrapper"></div>
+<!-- ФОН СО ЗВЕЗДАМИ И НОЧНЫМ ФИЛЬТРОМ ВНУТРИ -->
+<div id="game-bg">
+    <div id="night-overlay"></div>
+    <div id="stars-wrapper"></div>
+</div>
 
 <div id="world-container">
     <div id="ui-bar">
