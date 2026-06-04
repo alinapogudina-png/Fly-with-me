@@ -29,7 +29,7 @@
         input[type="range"] { width: 100%; accent-color: #fbd680; cursor: pointer; margin-top: 10px;}
         textarea { resize: vertical; min-height: 100px; white-space: pre; }
         
-        .flex-row { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; }
+        .flex-row { display: flex; gap: 15px; align-items: flex-end; margin-bottom: 10px; flex-wrap: wrap; }
         .flex-col { flex: 1; min-width: 120px; }
         
         .checkbox-label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; text-transform: none; color: #fff;}
@@ -47,13 +47,13 @@
 <body>
 
     <div class="editor-panel">
-        <h1 id="editor-title">ПОЛЕТ НА КОВРЕ-САМОЛЕТЕ</h1>
+        <h1 id="editor-title">Полет</h1>
         <div class="subtitle">Alina Pogudina 2026 @ELT_workshop</div>
         
         <div class="flex-row">
             <div class="form-group flex-col" style="flex:2">
                 <label>Название / Тема игры</label>
-                <input type="text" id="gameTitle" value="ПОЛЕТ НА КОВРЕ-САМОЛЕТЕ" oninput="document.getElementById('editor-title').innerText = this.value || 'ПОЛЕТ НА КОВРЕ-САМОЛЕТЕ'; debounceGenerate()">
+                <input type="text" id="gameTitle" value="Полет" oninput="document.getElementById('editor-title').innerText = this.value || 'Полет'; debounceGenerate()" placeholder="Оставьте пустым, если не нужно">
             </div>
             <div class="form-group flex-col">
                 <label>Язык</label>
@@ -71,42 +71,52 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label>Текст кнопки СТАРТ</label>
-            <input type="text" id="startBtnText" value="FLY WITH ME!" oninput="debounceGenerate()">
+        <div class="flex-row">
+            <div class="form-group flex-col" style="flex:2">
+                <label>Текст кнопки СТАРТ</label>
+                <input type="text" id="startBtnText" value="FLY WITH ME!" oninput="debounceGenerate()">
+            </div>
+             <div class="form-group flex-col">
+                <label>Цвет кнопки СТАРТ</label>
+                <input type="color" id="startBtnColor" value="#fbd680" onchange="debounceGenerate()">
+            </div>
         </div>
 
         <h3>Графика и Игровой процесс</h3>
         <div class="form-group">
-            <label>Фон игры (Город)</label>
-            <input type="url" id="imgBg" value="https://i.postimg.cc/sXSHhgfk/60329e3d55a9480d0505617c3dccfbdd-7c56eb53-c372-4941-8def-d5d43b7906a0.jpg" oninput="debounceGenerate()">
+            <label>Фон игры</label>
+            <input type="url" id="imgBg" value="https://img.genially.com/6573f8946d6d76001fe95399/e4a2dcd0-cefa-421c-bee7-59fe4b71af6b.png" oninput="debounceGenerate()">
         </div>
         
         <div class="flex-row">
             <div class="form-group flex-col" style="flex: 2;">
                 <label>Персонаж</label>
-                <input type="url" id="imgChar" value="https://i.postimg.cc/2SrYjgGC/Besplatnye-materialy-dla-detej2.png" oninput="debounceGenerate()">
+                <input type="url" id="imgChar" value="https://img.genially.com/6573f8946d6d76001fe95399/1b28e9de-2ed2-4a40-864c-a60c22ccb45b.png" oninput="debounceGenerate()">
             </div>
             <div class="form-group flex-col">
                 <label>Предмет (Монетка)</label>
-                <input type="url" id="imgCoin" value="https://i.postimg.cc/pLDyHSvH/pngwing-com4.png" oninput="debounceGenerate()">
+                <input type="url" id="imgCoin" value="https://img.genially.com/6573f8946d6d76001fe95399/84d4055c-43bf-4149-a70a-b19174d8ba92.png" oninput="debounceGenerate()">
             </div>
         </div>
         
         <div class="flex-row">
             <div class="form-group flex-col">
                 <label>Аватар в вопросе</label>
-                <input type="url" id="imgAvatar" value="https://i.postimg.cc/mD9P70Fn/ko-FEJna5.png" oninput="debounceGenerate()">
+                <input type="url" id="imgAvatar" value="https://img.genially.com/6573f8946d6d76001fe95399/1912e1d7-2e52-4031-b820-7bf4b16c0c42.png" oninput="debounceGenerate()">
             </div>
             <div class="form-group flex-col">
                 <label>Звезды ночью (оверлей)</label>
                 <input type="url" id="imgStars" value="https://i.postimg.cc/tCDyqXsR/zvezdy.png" oninput="debounceGenerate()">
             </div>
         </div>
-
+        
         <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
-            <label>Размер персонажа <span id="charSizeVal" class="val-display">30%</span></label>
-            <input type="range" id="charSize" min="10" max="60" value="30" oninput="updateVal('charSize', 'charSizeVal', '%'); debounceGenerate()">
+             <label>Размер персонажа <span id="charSizeVal" class="val-display">30%</span></label>
+             <input type="range" id="charSize" min="10" max="60" value="30" oninput="updateVal('charSize', 'charSizeVal', '%'); debounceGenerate()">
+        </div>
+        <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-top: -5px;">
+             <label>Размер летящего предмета <span id="coinSizeVal" class="val-display">60px</span></label>
+             <input type="range" id="flyingCoinSize" min="30" max="150" value="60" oninput="updateVal('flyingCoinSize', 'coinSizeVal', 'px'); debounceGenerate()">
         </div>
         
         <div class="flex-row">
@@ -116,7 +126,7 @@
             </div>
             <div class="form-group flex-col" style="flex: 2;">
                 <label>Иконка жизней</label>
-                <input type="url" id="imgLife" value="https://i.postimg.cc/KvL74jJr/pngwing-com-(80).png" oninput="debounceGenerate()">
+                <input type="url" id="imgLife" value="https://ai-image.genially.com/6573f8aadcff6600148cbabf/69dc8bd451b76f2b2b58b7dd/6a20f17c2c00f51eef6366cc.png" oninput="debounceGenerate()">
             </div>
         </div>
 
@@ -150,10 +160,15 @@
                 <option value="'Neucha', cursive">Neucha</option>
                 <option value="'Oswald', sans-serif">Oswald</option>
                 <option value="'Alice', serif">Alice</option>
+                <option value="'Creepster', cursive">Creepster</option>
+                <option value="'Rubik Bubbles', cursive">Rubik Bubbles</option>
+                <option value="'Pacifico', cursive">Pacifico</option>
+                <option value="'Indie Flower', cursive">Indie Flower</option>
+                <option value="'Patrick Hand', cursive">Patrick Hand</option>
             </select>
         </div>
 
-        <div class="flex-row" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+        <div class="flex-row" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; align-items: flex-start;">
             <div class="form-group flex-col" style="margin:0;"><label>Размер Вопроса (px)</label><input type="number" id="qFontSize" value="28" oninput="debounceGenerate()"></div>
             <div class="form-group flex-col" style="margin:0;"><label>Цвет Вопроса</label><input type="color" id="qColor" value="#ffffff" onchange="debounceGenerate()"></div>
             <div class="form-group flex-col" style="margin:0; border-left: 1px solid #4b4b6a; padding-left:15px;"><label>Размер Ответов (px)</label><input type="number" id="aFontSize" value="20" oninput="debounceGenerate()"></div>
@@ -200,11 +215,11 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
         <h3>Финальные экраны</h3>
         <div class="flex-row">
             <div class="form-group flex-col"><label>Текст Победы</label><input type="text" id="winText" value="YOU ARE A TRUE HERO!" oninput="debounceGenerate()"></div>
-            <div class="form-group flex-col"><label>Картинка Победы</label><input type="url" id="imgWin" value="https://i.postimg.cc/P5THf0yT/Besplatnye-materialy-dla-detej.png" oninput="debounceGenerate()"></div>
+            <div class="form-group flex-col"><label>Картинка Победы</label><input type="url" id="imgWin" value="https://img.genially.com/6573f8946d6d76001fe95399/faecc470-df5f-457a-8bef-0786e47c9e26.png" oninput="debounceGenerate()"></div>
         </div>
         <div class="flex-row">
             <div class="form-group flex-col"><label>Текст Поражения</label><input type="text" id="loseText" value="YOU LOST!" oninput="debounceGenerate()"></div>
-            <div class="form-group flex-col"><label>Картинка Поражения</label><input type="url" id="imgLose" value="" oninput="debounceGenerate()"></div>
+            <div class="form-group flex-col"><label>Картинка Поражения</label><input type="url" id="imgLose" value="https://img.genially.com/6573f8946d6d76001fe95399/049b2302-f531-4dc9-8403-751d890136b5.png" oninput="debounceGenerate()"></div>
         </div>
 
         <button class="gen-btn" id="copyBtn" onclick="copyCode()">СГЕНЕРИРОВАТЬ IFRAME-КОД</button>
@@ -243,9 +258,10 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
             if(tasks.length === 0) tasks = [{q: "Demo", type: "choice", correct: "Yes", wrongs: ["No"]}];
 
             return {
-                gameTitle: document.getElementById('gameTitle').value || "ПОЛЕТ НА КОВРЕ-САМОЛЕТЕ",
+                gameTitle: document.getElementById('gameTitle').value,
                 lang: document.getElementById('uiLang').value,
                 startBtnText: document.getElementById('startBtnText').value,
+                startBtnColor: document.getElementById('startBtnColor').value,
                 fontFamily: document.getElementById('fontFamily').value,
                 qFontSize: document.getElementById('qFontSize').value,
                 aFontSize: document.getElementById('aFontSize').value,
@@ -257,6 +273,7 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
                 imgBg: document.getElementById('imgBg').value,
                 imgChar: document.getElementById('imgChar').value,
                 imgCoin: document.getElementById('imgCoin').value,
+                flyingCoinSize: document.getElementById('flyingCoinSize').value,
                 imgAvatar: document.getElementById('imgAvatar').value,
                 imgStars: document.getElementById('imgStars').value,
                 charSize: document.getElementById('charSize').value,
@@ -298,47 +315,38 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"><\/script>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Alice&family=Amatic+SC:wght@700&family=Caveat:wght@700&family=Comfortaa:wght@700&family=Jura:wght@700&family=Kurale&family=Montserrat:wght@600;800&family=Neucha&family=Oswald:wght@500;700&family=Russo+One&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Alice&family=Amatic+SC:wght@700&family=Caveat:wght@700&family=Comfortaa:wght@700&family=Creepster&family=Indie+Flower&family=Jura:wght@700&family=Kurale&family=Montserrat:wght@600;800&family=Neucha&family=Oswald:wght@500;700&family=Pacifico&family=Patrick+Hand&family=Rubik+Bubbles&family=Russo+One&display=swap');
     
     html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; touch-action: none; font-family: ${conf.fontFamily}; color: #fff;}
     * { box-sizing: border-box !important; -webkit-tap-highlight-color: transparent;}
     
     #game-bg { position: absolute; inset: 0; width: 150vw; height: 100%; background: url('${conf.imgBg}') left center/cover no-repeat; z-index: 0; will-change: transform;}
     
-    /* ЭФФЕКТ ДЕНЬ/НОЧЬ И ЗВЕЗДЫ - ТЕПЕРЬ ОНИ ВНУТРИ ФОНА И ДВИЖУТСЯ С НИМ */
     #night-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, #000033, #000011); opacity: 0; z-index: 1; pointer-events: none; mix-blend-mode: multiply; transition: opacity 1.5s ease-in-out; display: ${conf.dayNightEffect ? 'block' : 'none'};}
     
     #stars-wrapper { position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity 1.5s ease-in-out; display: ${conf.dayNightEffect ? 'block' : 'none'}; }
     
-    #stars-wrapper::after { 
-        content: ''; 
-        position: absolute; 
-        inset: 0; 
-        background: url('${conf.imgStars}') center/cover; 
-        animation: starPulse 1.2s infinite alternate ease-in-out; 
-    }
+    #stars-wrapper::after { content: ''; position: absolute; inset: 0; background: url('${conf.imgStars}') center/cover; animation: starPulse 1.2s infinite alternate ease-in-out; }
     @keyframes starPulse { 0% { opacity: 0.4; } 100% { opacity: 1; } }
 
     #world-container { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 0 5%;}
 
     /* UI TOP BAR */
-    #ui-bar { position: absolute; top: 0; left: 0; right: 0; padding: 15px 20px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 50; flex-wrap: wrap; gap: 10px;}
-    .lives-box { display: flex; gap: 10px; flex-wrap: wrap; max-width: 40%;}
-    .life-icon { width: 40px; height: 40px; background: url('${conf.imgLife}') center/contain no-repeat; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6)); transition: 0.3s;}
+    #ui-bar { position: absolute; top: 0; left: 0; right: 0; padding: 15px 20px; display: flex; align-items: flex-start; z-index: 50; flex-wrap: wrap; gap: 10px;}
+    .lives-box { display: flex; gap: 5px; flex-wrap: wrap; }
+    .life-icon { width: 60px; height: 60px; background: url('${conf.imgLife}') center/contain no-repeat; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6)); transition: 0.3s; }
     .life-icon.lost { opacity: 0.3; filter: grayscale(1) drop-shadow(0 0 0 transparent); transform: scale(0.8); }
     
-    .right-controls { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: flex-end;}
-    .counter-box, .timer-box, .coin-box { font-size: 24px; font-weight: 800; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 2px 5px rgba(0,0,0,0.8); background: rgba(0,0,0,0.4); padding: 5px 15px; border-radius: 15px;}
+    .right-controls { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: flex-end; margin-left: auto; }
+    .counter-box, .timer-box { font-size: 24px; font-weight: 800; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 2px 5px rgba(0,0,0,0.8); background: rgba(0,0,0,0.4); padding: 5px 15px; border-radius: 15px;}
     .timer-box { display: ${conf.useTimer ? 'block' : 'none'}; }
     .btn-audio { background: rgba(0,0,0,0.5); border: 2px solid #fff; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; transition: 0.2s;}
 
-    /* СЧЕТЧИК МОНЕТ */
-    .coin-box { display: flex; align-items: center; gap: 8px; border: 2px solid ${conf.neonColor}; box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 10px ${conf.neonColor}; transition: 0.2s;}
-    .coin-icon-small { height: 26px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));}
+    .coin-box { font-size: 28px; padding: 10px 18px; font-weight: 800; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 2px 5px rgba(0,0,0,0.8); background: rgba(0,0,0,0.4); border-radius: 15px; display: flex; align-items: center; gap: 10px; border: 2px solid ${conf.neonColor}; box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 10px ${conf.neonColor}; transition: 0.2s;}
+    .coin-icon-small { height: 36px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));}
     .coin-bounce { animation: popCoin 0.3s ease-out; }
     @keyframes popCoin { 50% { transform: scale(1.2); filter: brightness(1.5); } }
 
-    /* ПЕРСОНАЖ */
     #character-wrapper { position: relative; width: ${conf.charSize}%; max-width: ${conf.charSize * 10}px; height: 40vh; animation: hoverBob 3s infinite ease-in-out; z-index: 30; }
     #character { width: 100%; height: 100%; background: url('${conf.imgChar}') center/contain no-repeat; filter: drop-shadow(0 0 15px rgba(241, 196, 15, 0.6)) drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transition: filter 0.3s;}
     #character-wrapper::after { content: ''; position: absolute; right: 80%; top: 50%; width: 100px; height: 40px; background: radial-gradient(ellipse, rgba(255,215,0,0.8) 0%, transparent 70%); filter: blur(5px); opacity: 0; transform: scaleX(0); transform-origin: right; transition: 0.5s; z-index: -1; pointer-events: none; }
@@ -352,11 +360,9 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
     @keyframes sparkles { 0% { opacity: 0.5; filter: blur(4px); } 100% { opacity: 1; filter: blur(8px); } }
     @keyframes hoverBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
 
-    /* МОНЕТКА */
-    #coin { position: absolute; width: 50px; height: 50px; background: url('${conf.imgCoin}') center/contain no-repeat; z-index: 25; top: 40%; left: 110vw; opacity: 0; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); }
+    #coin { position: absolute; width: ${conf.flyingCoinSize}px; height: ${conf.flyingCoinSize}px; background: url('${conf.imgCoin}') center/contain no-repeat; z-index: 25; top: 40%; left: 110vw; opacity: 0; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); }
     @keyframes flyCoin { 0% { left: 110vw; opacity: 1; transform: scale(1) rotate(0deg); } 60% { left: calc(5% + ${conf.charSize/2}%); opacity: 1; transform: scale(1) rotate(-360deg); } 65% { left: calc(5% + ${conf.charSize/2}%); opacity: 0; transform: scale(2.5) rotate(-380deg); filter: brightness(2); } 100% { left: -20vw; opacity: 0; } }
 
-    /* ЗОНА ВОПРОСА */
     #quiz-container { width: calc(90% - ${conf.charSize}%); max-width: 600px; display: flex; flex-direction: column; gap: 20px; opacity: 0; transform: translateX(50px); transition: 0.5s ease-out; pointer-events: none; margin-top: ${conf.imgAvatar ? '40px' : '0'};}
     #quiz-container.show { opacity: 1; transform: translateX(0); pointer-events: auto;}
     
@@ -364,36 +370,31 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
     #quiz-avatar { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid ${conf.neonColor}; box-shadow: 0 0 15px ${conf.neonColor}, 0 5px 15px rgba(0,0,0,0.6); background: #fff;}
     #question-text { font-size: ${conf.qFontSize}px; color: ${conf.qColor}; font-weight: 800; text-shadow: 0 2px 5px rgba(0,0,0,0.8); line-height: 1.3; margin: 0; }
     
-    /* ОТВЕТЫ */
     #answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%;}
-    .answer-btn { background: ${aBoxRgba}; border: 2px solid ${conf.neonColor}; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; font-size: ${conf.aFontSize}px; color: ${conf.aColor}; font-weight: 800; box-shadow: 0 5px 15px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.5); text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+    .answer-btn { background: ${aBoxRgba}; border: 2px solid ${conf.neonColor}; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; font-size: ${conf.aFontSize}px; color: ${conf.aColor}; font-weight: 800; box-shadow: 0 5px 15px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.5); }
     .answer-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px ${conf.neonColor}, inset 0 0 10px ${conf.neonColor}; background: ${conf.colorABox}; filter: brightness(1.2); }
     
-    /* ТИП: ВВОД ТЕКСТА */
     .input-task { display: flex; gap: 10px; width: 100%; grid-column: 1 / -1; justify-content: center;}
     .input-task input { flex: 1; padding: 15px; border-radius: 15px; border: 2px solid ${conf.neonColor}; background: rgba(0,0,0,0.6); color: ${conf.aColor}; font-size: ${conf.aFontSize}px; font-family: inherit; text-align: center; outline: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);}
     .input-task button { padding: 15px 30px; border-radius: 15px; background: ${aBoxRgba}; color: ${conf.aColor}; border: 2px solid ${conf.neonColor}; cursor: pointer; font-size: ${conf.aFontSize}px; font-weight: bold; font-family: inherit; transition: 0.2s;}
     .input-task button:hover { background: ${conf.colorABox}; box-shadow: 0 0 15px ${conf.neonColor};}
 
-    /* ТИП: СБОРКА ФРАЗЫ */
     .order-task { display: flex; flex-direction: column; gap: 15px; width: 100%; grid-column: 1 / -1;}
     .order-drop { min-height: 60px; border: 2px dashed ${conf.neonColor}; border-radius: 15px; display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); transition: 0.3s;}
     .order-pool { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; min-height: 60px;}
     .order-word { padding: 10px 15px; background: ${aBoxRgba}; color: ${conf.aColor}; border: 1px solid ${conf.neonColor}; border-radius: 10px; cursor: pointer; user-select: none; transition: 0.2s; font-size: calc(${conf.aFontSize}px * 0.9); font-weight: bold; box-shadow: 0 3px 8px rgba(0,0,0,0.5);}
     .order-word:hover { transform: scale(1.1) translateY(-2px); filter: brightness(1.2); }
 
-    /* ЭФФЕКТЫ */
     .correct-anim { border-color: #2ecc71 !important; box-shadow: 0 0 25px #2ecc71, inset 0 0 15px #2ecc71 !important; background: rgba(46, 204, 113, 0.4) !important;}
     .wrong-anim { border-color: #e74c3c !important; box-shadow: 0 0 25px #e74c3c, inset 0 0 15px #e74c3c !important; background: rgba(231, 76, 60, 0.4) !important; animation: shake 0.4s;}
     @keyframes shake { 0%, 100%{transform:translateX(0);} 25%{transform:translateX(-10px);} 75%{transform:translateX(10px);} }
 
-    /* ЭКРАНЫ */
     .elt-screen { position: absolute !important; inset: 0 !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; padding: 20px !important; z-index: 1000 !important; transition: opacity 0.5s !important; background: rgba(0,0,0,0.3); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);}
     .elt-hidden { display: none !important; opacity: 0 !important; pointer-events: none !important;}
     .screen-img { width: 90vw; max-width: 800px; height: 55vh; min-height: 400px; object-fit: contain; margin-bottom: 30px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8)); animation: floatImg 3s ease-in-out infinite; }
     @keyframes floatImg { 0%, 100%{transform:translateY(0);} 50%{transform:translateY(-20px);} }
     .elt-title { color: #fff; font-size: clamp(35px, 6vw, 60px); font-weight: 900; margin-bottom: 40px; text-align: center; text-transform: uppercase; text-shadow: 0 0 20px ${conf.neonColor}, 0 5px 10px rgba(0,0,0,0.8);}
-    .elt-btn-start { font-family: inherit; font-weight: 900; font-size: 32px; padding: 20px 60px; cursor: pointer; transition: 0.3s; background: linear-gradient(135deg, #f1c40f, #e67e22); color: #fff; border: 3px solid #fff; border-radius: 30px; box-shadow: 0 10px 30px rgba(230, 126, 34, 0.6); text-transform: uppercase; }
+    .elt-btn-start { font-family: inherit; font-weight: 900; font-size: 32px; padding: 20px 60px; cursor: pointer; transition: 0.3s; background: linear-gradient(135deg, #f1c40f, #e67e22); color: #222; border: 3px solid #fff; border-radius: 30px; box-shadow: 0 10px 30px rgba(230, 126, 34, 0.6); text-transform: uppercase; }
     .elt-btn-start:hover { transform: scale(1.1); filter: brightness(1.2); }
 
     @media (max-width: 768px) {
@@ -407,13 +408,14 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
         #question-box { padding: ${conf.imgAvatar ? '40px' : '15px'} 15px 15px; min-height: 80px;}
         #quiz-avatar { width: 70px; height: 70px; top: -35px; }
         .screen-img { height: 40vh; min-height: 250px; }
-        .counter-box, .timer-box, .coin-box { font-size: 18px; padding: 5px 10px;}
+        .counter-box, .timer-box, .coin-box { font-size: 18px; padding: 8px 12px;}
+        .coin-icon-small { height: 24px; }
+        .life-icon { width: 45px; height: 45px; }
     }
 </style>
 </head>
 <body>
 
-<!-- ФОН СО ЗВЕЗДАМИ И НОЧНЫМ ФИЛЬТРОМ ВНУТРИ -->
 <div id="game-bg">
     <div id="night-overlay"></div>
     <div id="stars-wrapper"></div>
@@ -443,20 +445,20 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
 </div>
 
 <div id="screen-start" class="elt-screen">
-    <div class="elt-title">${conf.gameTitle}</div>
-    <button class="elt-btn-start" id="btn-start">${conf.startBtnText}</button>
+    ${conf.gameTitle ? `<div class="elt-title">${conf.gameTitle}</div>` : ''}
+    <button class="elt-btn-start" id="btn-start" style="background: ${conf.startBtnColor};">${conf.startBtnText}</button>
 </div>
 
 <div id="screen-over" class="elt-screen elt-hidden">
-    ${conf.imgLose ? `<img src="${conf.imgLose}" class="screen-img" style="animation: none; filter: grayscale(1) drop-shadow(0 0 20px red);">` : ''}
+    ${conf.imgLose ? `<img src="${conf.imgLose}" class="screen-img" style="animation: none;">` : ''}
     <div class="elt-title" style="color: #e74c3c; text-shadow: 0 0 20px red;">${conf.loseText}</div>
-    <button class="elt-btn-start" id="btn-try">RESTART</button>
+    <button class="elt-btn-start" id="btn-try" style="background: ${conf.startBtnColor};">RESTART</button>
 </div>
 
 <div id="screen-win" class="elt-screen elt-hidden">
     ${conf.imgWin ? `<img src="${conf.imgWin}" class="screen-img">` : ''}
     <div class="elt-title" style="color: #fbd680; text-shadow: 0 0 20px gold;">${conf.winText}</div>
-    <button class="elt-btn-start" id="btn-win-restart">PLAY AGAIN</button>
+    <button class="elt-btn-start" id="btn-win-restart" style="background: ${conf.startBtnColor};">PLAY AGAIN</button>
 </div>
 
 <script>
@@ -537,7 +539,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function updateDayNight() {
         if(!DAY_NIGHT) return;
-        // Ритм: 2 вопроса день, 2 вопроса ночь (по кругу)
         let isNight = (currentLvl % 4 >= 2);
         nightOverlay.style.opacity = isNight ? '0.8' : '0';
         starsLayer.style.opacity = isNight ? '1' : '0';
@@ -745,6 +746,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
         updateVal('charSize', 'charSizeVal', '%');
+        updateVal('flyingCoinSize', 'coinSizeVal', 'px');
         debounceGenerate();
     </script>
 </body>
