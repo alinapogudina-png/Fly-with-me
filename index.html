@@ -21,6 +21,8 @@
         h3 { color: #fff; font-size: 15px; margin-bottom: 12px; border-bottom: 1px solid #4b4b6a; padding-bottom: 5px; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px;}
         
         .form-group { margin-bottom: 15px; }
+        .styled-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 10px; }
+        
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 12px; color: #b5b5c3; text-transform: uppercase;}
         .help-text { font-size: 11px; color: #4ae38c; margin-top: -4px; margin-bottom: 10px; display: block; text-transform: none; line-height: 1.4;}
         input[type="text"], input[type="url"], input[type="number"], select, textarea { width: 100%; padding: 10px 15px; border-radius: 10px; border: 1px solid #4b4b6a; background-color: #1a1a2e; color: #fff; box-sizing: border-box; font-family: 'Poppins', sans-serif; font-size: 13px; transition: 0.3s; }
@@ -110,11 +112,29 @@
             </div>
         </div>
         
-        <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+        <div class="styled-box">
              <label>Размер персонажа <span id="charSizeVal" class="val-display">30%</span></label>
              <input type="range" id="charSize" min="10" max="60" value="30" oninput="updateVal('charSize', 'charSizeVal', '%'); debounceGenerate()">
         </div>
-        <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-top: -5px;">
+
+        <div class="styled-box">
+             <label>Позиция по вертикали <span id="charVerticalPosVal" class="val-display">0vh</span></label>
+             <input type="range" id="charVerticalPos" min="-20" max="20" value="0" oninput="updateVal('charVerticalPos', 'charVerticalPosVal', 'vh'); debounceGenerate()">
+        </div>
+        
+        <div class="styled-box">
+            <div class="flex-row">
+                <div class="flex-col">
+                    <label class="checkbox-label"><input type="checkbox" id="useCharGlow" checked onchange="debounceGenerate()"> Свечение</label>
+                </div>
+                <div class="flex-col">
+                    <label>Цвет свечения</label>
+                    <input type="color" id="charGlowColor" value="#f1c40f" onchange="debounceGenerate()">
+                </div>
+            </div>
+        </div>
+
+        <div class="styled-box">
              <label>Размер летящего предмета <span id="coinSizeVal" class="val-display">60px</span></label>
              <input type="range" id="flyingCoinSize" min="30" max="150" value="60" oninput="updateVal('flyingCoinSize', 'coinSizeVal', 'px'); debounceGenerate()">
         </div>
@@ -130,7 +150,7 @@
             </div>
         </div>
 
-        <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+        <div class="styled-box">
             <label class="checkbox-label" style="margin-bottom: 10px;">
                 <input type="checkbox" id="useTimer" onchange="debounceGenerate()"> Таймер на вопрос (сек)
             </label>
@@ -168,11 +188,13 @@
             </select>
         </div>
 
-        <div class="flex-row" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; align-items: flex-start;">
-            <div class="form-group flex-col" style="margin:0;"><label>Размер Вопроса (px)</label><input type="number" id="qFontSize" value="28" oninput="debounceGenerate()"></div>
-            <div class="form-group flex-col" style="margin:0;"><label>Цвет Вопроса</label><input type="color" id="qColor" value="#ffffff" onchange="debounceGenerate()"></div>
-            <div class="form-group flex-col" style="margin:0; border-left: 1px solid #4b4b6a; padding-left:15px;"><label>Размер Ответов (px)</label><input type="number" id="aFontSize" value="20" oninput="debounceGenerate()"></div>
-            <div class="form-group flex-col" style="margin:0;"><label>Цвет Ответов</label><input type="color" id="aColor" value="#ffffff" onchange="debounceGenerate()"></div>
+        <div class="styled-box">
+             <div class="flex-row" style="align-items: flex-start; margin: 0;">
+                <div class="form-group flex-col" style="margin:0;"><label>Размер Вопроса (px)</label><input type="number" id="qFontSize" value="28" oninput="debounceGenerate()"></div>
+                <div class="form-group flex-col" style="margin:0;"><label>Цвет Вопроса</label><input type="color" id="qColor" value="#ffffff" onchange="debounceGenerate()"></div>
+                <div class="form-group flex-col" style="margin:0; border-left: 1px solid #4b4b6a; padding-left:15px;"><label>Размер Ответов (px)</label><input type="number" id="aFontSize" value="20" oninput="debounceGenerate()"></div>
+                <div class="form-group flex-col" style="margin:0;"><label>Цвет Ответов</label><input type="color" id="aColor" value="#ffffff" onchange="debounceGenerate()"></div>
+            </div>
         </div>
 
         <h3>Задания (Викторина)</h3>
@@ -277,6 +299,9 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
                 imgAvatar: document.getElementById('imgAvatar').value,
                 imgStars: document.getElementById('imgStars').value,
                 charSize: document.getElementById('charSize').value,
+                charVerticalPos: document.getElementById('charVerticalPos').value,
+                useCharGlow: document.getElementById('useCharGlow').checked,
+                charGlowColor: document.getElementById('charGlowColor').value,
                 imgLife: document.getElementById('imgLife').value,
                 livesCount: parseInt(document.getElementById('livesCount').value) || 3,
                 audioBg: document.getElementById('audioBg').value,
@@ -303,6 +328,9 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
                 return `rgba(${r}, ${g}, ${b}, 0.95)`;
             };
             let aBoxRgba = hexToRgb(conf.colorABox);
+            const charFilter = conf.useCharGlow 
+                ? `drop-shadow(0 0 15px ${conf.charGlowColor}) drop-shadow(0 10px 15px rgba(0,0,0,0.5))`
+                : `drop-shadow(0 10px 15px rgba(0,0,0,0.5))`;
 
             const innerHTML = `<!DOCTYPE html>
 <html lang="${conf.lang.toLowerCase()}">
@@ -347,8 +375,8 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
     .coin-bounce { animation: popCoin 0.3s ease-out; }
     @keyframes popCoin { 50% { transform: scale(1.2); filter: brightness(1.5); } }
 
-    #character-wrapper { position: relative; width: ${conf.charSize}%; max-width: ${conf.charSize * 10}px; height: 40vh; animation: hoverBob 3s infinite ease-in-out; z-index: 30; }
-    #character { width: 100%; height: 100%; background: url('${conf.imgChar}') center/contain no-repeat; filter: drop-shadow(0 0 15px rgba(241, 196, 15, 0.6)) drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transition: filter 0.3s;}
+    #character-wrapper { position: relative; top: ${conf.charVerticalPos}vh; width: ${conf.charSize}%; max-width: ${conf.charSize * 10}px; height: 40vh; animation: hoverBob 3s infinite ease-in-out; z-index: 30; }
+    #character { width: 100%; height: 100%; background: url('${conf.imgChar}') center/contain no-repeat; filter: ${charFilter}; transition: filter 0.3s, transform 0.3s;}
     #character-wrapper::after { content: ''; position: absolute; right: 80%; top: 50%; width: 100px; height: 40px; background: radial-gradient(ellipse, rgba(255,215,0,0.8) 0%, transparent 70%); filter: blur(5px); opacity: 0; transform: scaleX(0); transform-origin: right; transition: 0.5s; z-index: -1; pointer-events: none; }
     
     .char-flying { transform: translateY(-20px) rotate(5deg) scale(1.05); animation: none !important;}
@@ -368,7 +396,7 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
     
     #question-box { position: relative; width: 100%; padding: ${conf.imgAvatar ? '50px' : '25px'} 30px 25px; border-radius: 20px; text-align: center; background: ${conf.colorQBox}; box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px ${conf.neonColor}; border: 2px solid ${conf.neonColor}; min-height: 120px; display: flex; align-items: center; justify-content: center;}
     #quiz-avatar { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid ${conf.neonColor}; box-shadow: 0 0 15px ${conf.neonColor}, 0 5px 15px rgba(0,0,0,0.6); background: #fff;}
-    #question-text { font-size: ${conf.qFontSize}px; color: ${conf.qColor}; font-weight: 800; text-shadow: 0 2px 5px rgba(0,0,0,0.8); line-height: 1.3; margin: 0; }
+    #question-text { font-size: ${conf.qFontSize}px; color: ${conf.qColor}; font-weight: 800; line-height: 1.3; margin: 0; }
     
     #answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%;}
     .answer-btn { background: ${aBoxRgba}; border: 2px solid ${conf.neonColor}; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; font-size: ${conf.aFontSize}px; color: ${conf.aColor}; font-weight: 800; box-shadow: 0 5px 15px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.5); }
@@ -744,9 +772,13 @@ window.addEventListener('DOMContentLoaded', () => {
             el.addEventListener('input', debounceGenerate);
             el.addEventListener('change', debounceGenerate);
         });
+        document.querySelectorAll('input[type="range"]').forEach(el => {
+             el.addEventListener('input', debounceGenerate);
+        });
 
         updateVal('charSize', 'charSizeVal', '%');
         updateVal('flyingCoinSize', 'coinSizeVal', 'px');
+        updateVal('charVerticalPos', 'charVerticalPosVal', 'vh');
         debounceGenerate();
     </script>
 </body>
