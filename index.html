@@ -28,6 +28,9 @@
         input[type="text"], input[type="url"], input[type="number"], select, textarea { width: 100%; padding: 10px 15px; border-radius: 10px; border: 1px solid #4b4b6a; background-color: #1a1a2e; color: #fff; box-sizing: border-box; font-family: 'Poppins', sans-serif; font-size: 13px; transition: 0.3s; }
         input[type="text"]:focus, input[type="url"]:focus, select:focus, textarea:focus, input[type="number"]:focus { border-color: #fbd680; outline: none; box-shadow: 0 0 10px rgba(251, 214, 128, 0.2); }
         input[type="color"] { padding: 0; border: none; width: 100%; height: 36px; border-radius: 8px; cursor: pointer; background: transparent; }
+        input[type="file"] { margin-top: 8px; color: #a0a0c0; font-size: 12px; }
+        input[type="file"]::file-selector-button { font-family: 'Poppins', sans-serif; font-weight: 600; background-color: #4b4b6a; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        input[type="file"]::file-selector-button:hover { background-color: #fbd680; color: #1a1a2e; }
         input[type="range"] { width: 100%; accent-color: #fbd680; cursor: pointer; margin-top: 10px;}
         textarea { resize: vertical; min-height: 100px; white-space: pre; }
         
@@ -58,6 +61,10 @@
                 <input type="text" id="gameTitle" value="Полет" oninput="document.getElementById('editor-title').innerText = this.value || 'Полет'; debounceGenerate()" placeholder="Оставьте пустым, если не нужно">
             </div>
             <div class="form-group flex-col">
+                <label>Цвет названия</label>
+                <input type="color" id="titleColor" value="#ffffff" onchange="debounceGenerate()">
+            </div>
+            <div class="form-group flex-col">
                 <label>Язык</label>
                 <select id="uiLang" onchange="debounceGenerate()">
                     <option value="EN">English</option>
@@ -74,41 +81,50 @@
         </div>
 
         <div class="flex-row">
-            <div class="form-group flex-col" style="flex:2">
+            <div class="form-group flex-col" style="flex:1.5">
                 <label>Текст кнопки СТАРТ</label>
                 <input type="text" id="startBtnText" value="FLY WITH ME!" oninput="debounceGenerate()">
             </div>
-             <div class="form-group flex-col">
-                <label>Цвет кнопки СТАРТ</label>
+             <div class="form-group flex-col" style="flex:0.75">
+                <label>Цвет кнопки</label>
                 <input type="color" id="startBtnColor" value="#fbd680" onchange="debounceGenerate()">
+            </div>
+             <div class="form-group flex-col" style="flex:0.75">
+                <label>Цвет текста</label>
+                <input type="color" id="startBtnTextColor" value="#1a1a2e" onchange="debounceGenerate()">
             </div>
         </div>
 
         <h3>Графика и Игровой процесс</h3>
         <div class="form-group">
-            <label>Фон игры</label>
-            <input type="url" id="imgBg" value="https://img.genially.com/6573f8946d6d76001fe95399/e4a2dcd0-cefa-421c-bee7-59fe4b71af6b.png" oninput="debounceGenerate()">
+            <label>Фон игры (URL или Загрузка)</label>
+            <input type="url" id="imgBg" value="https://img.genially.com/6573f8946d6d76001fe95399/e4a2dcd0-cefa-421c-bee7-59fe4b71af6b.png" oninput="debounceGenerate()" placeholder="Вставьте URL или загрузите файл...">
+            <input type="file" id="imgBgUpload" accept="image/*">
         </div>
         
         <div class="flex-row">
             <div class="form-group flex-col" style="flex: 2;">
-                <label>Персонаж</label>
-                <input type="url" id="imgChar" value="https://img.genially.com/6573f8946d6d76001fe95399/1b28e9de-2ed2-4a40-864c-a60c22ccb45b.png" oninput="debounceGenerate()">
+                <label>Персонаж (URL или Загрузка)</label>
+                <input type="url" id="imgChar" value="https://img.genially.com/6573f8946d6d76001fe95399/1b28e9de-2ed2-4a40-864c-a60c22ccb45b.png" oninput="debounceGenerate()" placeholder="Вставьте URL или загрузите файл...">
+                <input type="file" id="imgCharUpload" accept="image/*">
             </div>
             <div class="form-group flex-col">
-                <label>Предмет (Монетка)</label>
-                <input type="url" id="imgCoin" value="https://img.genially.com/6573f8946d6d76001fe95399/84d4055c-43bf-4149-a70a-b19174d8ba92.png" oninput="debounceGenerate()">
+                <label>Предмет (Монетка) (URL или Загрузка)</label>
+                <input type="url" id="imgCoin" placeholder="Вставьте URL или загрузите файл..." oninput="debounceGenerate()">
+                <input type="file" id="imgCoinUpload" accept="image/*">
             </div>
         </div>
         
         <div class="flex-row">
             <div class="form-group flex-col">
-                <label>Аватар в вопросе</label>
-                <input type="url" id="imgAvatar" value="https://img.genially.com/6573f8946d6d76001fe95399/1912e1d7-2e52-4031-b820-7bf4b16c0c42.png" oninput="debounceGenerate()">
+                <label>Аватар в вопросе (URL или Загрузка)</label>
+                <input type="url" id="imgAvatar" placeholder="Вставьте URL или загрузите файл..." oninput="debounceGenerate()">
+                <input type="file" id="imgAvatarUpload" accept="image/*">
             </div>
             <div class="form-group flex-col">
-                <label>Звезды ночью (оверлей)</label>
-                <input type="url" id="imgStars" value="https://i.postimg.cc/tCDyqXsR/zvezdy.png" oninput="debounceGenerate()">
+                <label>Звезды ночью (оверлей) (URL или Загрузка)</label>
+                <input type="url" id="imgStars" placeholder="Вставьте URL или загрузите файл..." oninput="debounceGenerate()">
+                <input type="file" id="imgStarsUpload" accept="image/*">
             </div>
         </div>
         
@@ -145,8 +161,9 @@
                 <input type="number" id="livesCount" value="3" min="1" max="10" oninput="debounceGenerate()">
             </div>
             <div class="form-group flex-col" style="flex: 2;">
-                <label>Иконка жизней</label>
-                <input type="url" id="imgLife" value="https://ai-image.genially.com/6573f8aadcff6600148cbabf/69dc8bd451b76f2b2b58b7dd/6a20f17c2c00f51eef6366cc.png" oninput="debounceGenerate()">
+                <label>Иконка жизней (URL или Загрузка)</label>
+                <input type="url" id="imgLife" value="https://ai-image.genially.com/6573f8aadcff6600148cbabf/69dc8bd451b76f2b2b58b7dd/6a20f17c2c00f51eef6366cc.png" oninput="debounceGenerate()" placeholder="Вставьте URL или загрузите файл...">
+                <input type="file" id="imgLifeUpload" accept="image/*">
             </div>
         </div>
 
@@ -231,17 +248,23 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
         </div>
         <div class="flex-row">
             <div class="form-group flex-col"><label>Ошибка</label><input type="url" id="audioErr" value="https://archive.org/download/bu-bu--multyashnyiy-proval/bu-bu--multyashnyiy-proval.mp3" oninput="debounceGenerate()"></div>
-            <div class="form-group flex-col"><label>Победа</label><input type="url" id="audioWin" value="https://files.catbox.moe/8jacx9.mp3" oninput="debounceGenerate()"></div>
+            <div class="form-group flex-col"><label>Победа</label><input type="url" id="audioWin" value="https://archive.org/download/game-won/game-won.mp3" oninput="debounceGenerate()"></div>
         </div>
 
         <h3>Финальные экраны</h3>
         <div class="flex-row">
             <div class="form-group flex-col"><label>Текст Победы</label><input type="text" id="winText" value="YOU ARE A TRUE HERO!" oninput="debounceGenerate()"></div>
-            <div class="form-group flex-col"><label>Картинка Победы</label><input type="url" id="imgWin" value="https://img.genially.com/6573f8946d6d76001fe95399/faecc470-df5f-457a-8bef-0786e47c9e26.png" oninput="debounceGenerate()"></div>
+            <div class="form-group flex-col"><label>Картинка Победы (URL или Загрузка)</label>
+                <input type="url" id="imgWin" placeholder="Вставьте URL или загрузите файл..." oninput="debounceGenerate()">
+                <input type="file" id="imgWinUpload" accept="image/*">
+            </div>
         </div>
         <div class="flex-row">
             <div class="form-group flex-col"><label>Текст Поражения</label><input type="text" id="loseText" value="YOU LOST!" oninput="debounceGenerate()"></div>
-            <div class="form-group flex-col"><label>Картинка Поражения</label><input type="url" id="imgLose" value="https://img.genially.com/6573f8946d6d76001fe95399/049b2302-f531-4dc9-8403-751d890136b5.png" oninput="debounceGenerate()"></div>
+            <div class="form-group flex-col"><label>Картинка Поражения (URL или Загрузка)</label>
+                <input type="url" id="imgLose" placeholder="Вставьте URL или загрузите файл..." oninput="debounceGenerate()">
+                <input type="file" id="imgLoseUpload" accept="image/*">
+            </div>
         </div>
 
         <button class="gen-btn" id="copyBtn" onclick="copyCode()">СГЕНЕРИРОВАТЬ IFRAME-КОД</button>
@@ -254,6 +277,45 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
     </div>
 
     <script>
+        function handleFileUpload(event, urlInputId) {
+            const file = event.target.files[0];
+            if (!file) { return; }
+
+            const isBackground = urlInputId === 'imgBg';
+            const maxSizeMB = isBackground ? 5 : 2;
+            const maxSizeBytes = maxSizeMB * 1024 * 1024;
+            
+            if (file.size > maxSizeBytes) {
+                alert(`Файл слишком большой! Пожалуйста, выберите изображение размером до ${maxSizeMB} МБ.`);
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById(urlInputId).value = e.target.result;
+                debounceGenerate();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('imgBgUpload').addEventListener('change', (e) => handleFileUpload(e, 'imgBg'));
+            document.getElementById('imgCharUpload').addEventListener('change', (e) => handleFileUpload(e, 'imgChar'));
+            document.getElementById('imgCoinUpload').addEventListener('change', (e) => handleFileUpload(e, 'imgCoin'));
+            document.getElementById('imgAvatarUpload').addEventListener('change', (e) => handleFileUpload(e, 'imgAvatar'));
+            document.getElementById('imgStarsUpload').addEventListener('change', (e) => handleFileUpload(e, 'imgStars'));
+            document.getElementById('imgLifeUpload').addEventListener('change', (e) => handleFileUpload(e, 'imgLife'));
+            document.getElementById('imgWinUpload').addEventListener('change', (e) => handleFileUpload(e, 'imgWin'));
+            document.getElementById('imgLoseUpload').addEventListener('change', (e) => handleFileUpload(e, 'imgLose'));
+            
+            updateVal('charSize', 'charSizeVal', '%');
+            updateVal('flyingCoinSize', 'coinSizeVal', 'px');
+            updateVal('charVerticalPos', 'charVerticalPosVal', 'vh');
+            debounceGenerate();
+        });
+
+
         function updateVal(inputId, displayId, suffix) { document.getElementById(displayId).innerText = document.getElementById(inputId).value + suffix; }
 
         function getInputs() {
@@ -281,9 +343,11 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
 
             return {
                 gameTitle: document.getElementById('gameTitle').value,
+                titleColor: document.getElementById('titleColor').value,
                 lang: document.getElementById('uiLang').value,
                 startBtnText: document.getElementById('startBtnText').value,
                 startBtnColor: document.getElementById('startBtnColor').value,
+                startBtnTextColor: document.getElementById('startBtnTextColor').value,
                 fontFamily: document.getElementById('fontFamily').value,
                 qFontSize: document.getElementById('qFontSize').value,
                 aFontSize: document.getElementById('aFontSize').value,
@@ -331,13 +395,13 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
             const charFilter = conf.useCharGlow 
                 ? `drop-shadow(0 0 15px ${conf.charGlowColor}) drop-shadow(0 10px 15px rgba(0,0,0,0.5))`
                 : `drop-shadow(0 10px 15px rgba(0,0,0,0.5))`;
+            const buttonStyle = `background: ${conf.startBtnColor}; color: ${conf.startBtnTextColor};`;
 
             const innerHTML = `<!DOCTYPE html>
 <html lang="${conf.lang.toLowerCase()}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<!-- MATH JAX / KATEX -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"><\/script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"><\/script>
@@ -359,7 +423,6 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
 
     #world-container { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 0 5%;}
 
-    /* UI TOP BAR */
     #ui-bar { position: absolute; top: 0; left: 0; right: 0; padding: 15px 20px; display: flex; align-items: flex-start; z-index: 50; flex-wrap: wrap; gap: 10px;}
     .lives-box { display: flex; gap: 5px; flex-wrap: wrap; }
     .life-icon { width: 60px; height: 60px; background: url('${conf.imgLife}') center/contain no-repeat; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6)); transition: 0.3s; }
@@ -381,7 +444,6 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
     
     .char-flying { transform: translateY(-20px) rotate(5deg) scale(1.05); animation: none !important;}
     .char-flying::after { opacity: 1 !important; transform: scaleX(1) !important; animation: sparkles 0.5s infinite alternate;}
-
     .char-flash-gold #character { filter: brightness(1.5) drop-shadow(0 0 40px gold) drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transform: scale(1.1); }
     .char-flash-red #character { filter: brightness(0.8) sepia(1) hue-rotate(-50deg) saturate(5) drop-shadow(0 0 30px red); transform: scale(0.9) rotate(-10deg); }
 
@@ -421,8 +483,8 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
     .elt-hidden { display: none !important; opacity: 0 !important; pointer-events: none !important;}
     .screen-img { width: 90vw; max-width: 800px; height: 55vh; min-height: 400px; object-fit: contain; margin-bottom: 30px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8)); animation: floatImg 3s ease-in-out infinite; }
     @keyframes floatImg { 0%, 100%{transform:translateY(0);} 50%{transform:translateY(-20px);} }
-    .elt-title { color: #fff; font-size: clamp(35px, 6vw, 60px); font-weight: 900; margin-bottom: 40px; text-align: center; text-transform: uppercase; text-shadow: 0 0 20px ${conf.neonColor}, 0 5px 10px rgba(0,0,0,0.8);}
-    .elt-btn-start { font-family: inherit; font-weight: 900; font-size: 32px; padding: 20px 60px; cursor: pointer; transition: 0.3s; background: linear-gradient(135deg, #f1c40f, #e67e22); color: #222; border: 3px solid #fff; border-radius: 30px; box-shadow: 0 10px 30px rgba(230, 126, 34, 0.6); text-transform: uppercase; }
+    .elt-title { font-size: clamp(35px, 6vw, 60px); font-weight: 900; margin-bottom: 40px; text-align: center; text-transform: uppercase; text-shadow: 0 0 20px ${conf.neonColor}, 0 5px 10px rgba(0,0,0,0.8);}
+    .elt-btn-start { font-family: inherit; font-weight: 900; font-size: 32px; padding: 20px 60px; cursor: pointer; transition: 0.3s; color: #222; border: 3px solid #fff; border-radius: 30px; box-shadow: 0 10px 30px rgba(230, 126, 34, 0.6); text-transform: uppercase; }
     .elt-btn-start:hover { transform: scale(1.1); filter: brightness(1.2); }
 
     @media (max-width: 768px) {
@@ -473,34 +535,27 @@ $x = 4$ | $x = 8$ | $x = 2$ | $x = 16$</textarea>
 </div>
 
 <div id="screen-start" class="elt-screen">
-    ${conf.gameTitle ? `<div class="elt-title">${conf.gameTitle}</div>` : ''}
-    <button class="elt-btn-start" id="btn-start" style="background: ${conf.startBtnColor};">${conf.startBtnText}</button>
+    ${conf.gameTitle ? `<div class="elt-title" style="color: ${conf.titleColor};">${conf.gameTitle}</div>` : ''}
+    <button class="elt-btn-start" id="btn-start" style="${buttonStyle}">${conf.startBtnText}</button>
 </div>
 
 <div id="screen-over" class="elt-screen elt-hidden">
     ${conf.imgLose ? `<img src="${conf.imgLose}" class="screen-img" style="animation: none;">` : ''}
     <div class="elt-title" style="color: #e74c3c; text-shadow: 0 0 20px red;">${conf.loseText}</div>
-    <button class="elt-btn-start" id="btn-try" style="background: ${conf.startBtnColor};">RESTART</button>
+    <button class="elt-btn-start" id="btn-try" style="${buttonStyle}">RESTART</button>
 </div>
 
 <div id="screen-win" class="elt-screen elt-hidden">
     ${conf.imgWin ? `<img src="${conf.imgWin}" class="screen-img">` : ''}
     <div class="elt-title" style="color: #fbd680; text-shadow: 0 0 20px gold;">${conf.winText}</div>
-    <button class="elt-btn-start" id="btn-win-restart" style="background: ${conf.startBtnColor};">PLAY AGAIN</button>
+    <button class="elt-btn-start" id="btn-win-restart" style="${buttonStyle}">PLAY AGAIN</button>
 </div>
 
 <script>
 window.addEventListener('DOMContentLoaded', () => {
     const dict = { 
-        EN: { restart: "PLAY AGAIN" }, 
-        RU: { restart: "ЗАНОВО" }, 
-        ES: { restart: "REINICIAR" }, 
-        FR: { restart: "REJOUER" },
-        DE: { restart: "NEUSTART" },
-        IT: { restart: "RIPROVA" },
-        PT: { restart: "JOGAR NOVAMENTE" },
-        TR: { restart: "TEKRAR OYNA" },
-        PL: { restart: "ZAGRAJ PONOWNIE" }
+        EN: { restart: "PLAY AGAIN" }, RU: { restart: "ЗАНОВО" }, ES: { restart: "REINICIAR" }, FR: { restart: "REJOUER" },
+        DE: { restart: "NEUSTART" }, IT: { restart: "RIPROVA" }, PT: { restart: "JOGAR NOVAMENTE" }, TR: { restart: "TEKRAR OYNA" }, PL: { restart: "ZAGRAJ PONOWNIE" }
     };
     const lang = dict['${conf.lang}'] || dict['EN'];
     document.getElementById('btn-win-restart').innerText = lang.restart;
@@ -543,28 +598,19 @@ window.addEventListener('DOMContentLoaded', () => {
         isMuted = !isMuted;
         e.target.innerText = isMuted ? '🔇' : '🎵';
         if(isMuted) { 
-            if(sfxBg) sfxBg.pause(); 
-            if(sfxWin) sfxWin.pause(); 
+            if(sfxBg) sfxBg.pause(); if(sfxWin) sfxWin.pause(); 
         } else if(document.getElementById('screen-win').classList.contains('elt-hidden')) { 
             if(sfxBg) sfxBg.play().catch(()=>{}); 
         }
     });
 
-    function buildLives() {
-        livesBox.innerHTML = '';
-        for(let i=0; i<MAX_LIVES; i++) { let d = document.createElement('div'); d.className = 'life-icon'; livesBox.appendChild(d); }
-    }
-
-    function updateLives() {
-        for(let i=0; i<MAX_LIVES; i++) { if(i < lives) livesBox.children[i].classList.remove('lost'); else livesBox.children[i].classList.add('lost'); }
-    }
-
+    function buildLives() { livesBox.innerHTML = Array.from({length: MAX_LIVES}, () => '<div class="life-icon"></div>').join(''); }
+    function updateLives() { Array.from(livesBox.children).forEach((el, i) => el.classList.toggle('lost', i >= lives)); }
     function updateCoins() {
         document.getElementById('coins-text').innerText = coinsCollected;
         let b = document.getElementById('coin-counter-box');
         b.classList.remove('coin-bounce'); void b.offsetWidth; b.classList.add('coin-bounce');
     }
-
     function updateDayNight() {
         if(!DAY_NIGHT) return;
         let isNight = (currentLvl % 4 >= 2);
@@ -574,7 +620,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function startGame() {
         document.querySelectorAll('.elt-screen').forEach(el => el.classList.add('elt-hidden'));
-        
         charWrap.style.animation = 'hoverBob 3s infinite ease-in-out';
         charWrap.style.transition = 'transform 0.8s ease-in-out';
         charWrap.style.transform = 'none';
@@ -598,16 +643,15 @@ window.addEventListener('DOMContentLoaded', () => {
             if(timeLeft <= 0) { clearInterval(timerInt); processWrong(null); }
         }, 1000);
     }
-
     function updateTimerDisplay() {
-        document.getElementById('timer').innerText = Math.floor(timeLeft / 60).toString().padStart(2, '0') + ':' + (timeLeft % 60).toString().padStart(2, '0');
-        document.getElementById('timer').style.color = timeLeft <= 5 ? '#e74c3c' : '#fff';
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = Math.floor(timeLeft / 60).toString().padStart(2, '0') + ':' + (timeLeft % 60).toString().padStart(2, '0');
+        timerEl.style.color = timeLeft <= 5 ? '#e74c3c' : '#fff';
     }
 
     function flyToNext(isFirst = false, isWinFlight = false) {
         isTransitioning = true; clearInterval(timerInt);
         quizCont.classList.remove('show');
-        
         updateDayNight();
 
         bgEl.style.transition = 'none'; bgEl.style.transform = 'translateX(0)';
@@ -639,9 +683,7 @@ window.addEventListener('DOMContentLoaded', () => {
         let task = TASKS[currentLvl]; qText.innerText = task.q; aGrid.innerHTML = '';
         
         if (task.type === 'choice') {
-            let options = [{t: task.correct, c: true}];
-            task.wrongs.forEach(w => options.push({t: w, c: false}));
-            options.sort(() => Math.random() - 0.5);
+            let options = [{t: task.correct, c: true}, ...task.wrongs.map(w => ({t: w, c: false}))].sort(() => Math.random() - 0.5);
             options.forEach(opt => {
                 let btn = document.createElement('div'); btn.className = 'answer-btn'; btn.innerText = opt.t;
                 btn.onclick = () => checkAnswer(btn, opt.c);
@@ -651,11 +693,7 @@ window.addEventListener('DOMContentLoaded', () => {
         else if (task.type === 'input') {
             aGrid.innerHTML = \`<div class="input-task"><input type="text" id="t-inp" placeholder="???"><button id="t-btn">OK</button></div>\`;
             let inp = document.getElementById('t-inp'), btn = document.getElementById('t-btn');
-            let check = () => {
-                let val = inp.value.trim();
-                if(!val) return;
-                checkAnswer(btn, val.toLowerCase() === task.correct.toLowerCase());
-            };
+            let check = () => { if(inp.value.trim()) checkAnswer(btn, inp.value.trim().toLowerCase() === task.correct.toLowerCase()); };
             btn.onclick = check; inp.onkeypress = (e) => { if(e.key === 'Enter') check(); };
             setTimeout(() => inp.focus(), 500);
         }
@@ -667,8 +705,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 b.onclick = () => {
                     (b.parentElement === pool ? drop : pool).appendChild(b);
                     if(drop.children.length === task.words.length) {
-                        let ans = Array.from(drop.children).map(c=>c.innerText).join(' ');
-                        checkAnswer(drop, ans.toLowerCase() === task.correct.toLowerCase());
+                        checkAnswer(drop, Array.from(drop.children).map(c=>c.innerText).join(' ').toLowerCase() === task.correct.toLowerCase());
                     }
                 };
                 pool.appendChild(b);
@@ -676,16 +713,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         
         setTimeout(() => {
-            if(window.renderMathInElement) {
-                renderMathInElement(quizCont, {
-                    delimiters: [
-                        {left: "$$", right: "$$", display: true},
-                        {left: "$", right: "$", display: false},
-                        {left: "\\\\(", right: "\\\\)", display: false}
-                    ],
-                    throwOnError: false
-                });
-            }
+            if(window.renderMathInElement) renderMathInElement(quizCont, {delimiters: [{left: "$", right: "$", display: false}], throwOnError: false});
         }, 50);
 
         quizCont.classList.add('show');
@@ -716,12 +744,9 @@ window.addEventListener('DOMContentLoaded', () => {
         
         if(lives <= 0) {
             setTimeout(() => {
-                charWrap.style.animation = 'none';
-                void charWrap.offsetWidth;
-                
+                charWrap.style.animation = 'none'; void charWrap.offsetWidth;
                 charWrap.style.transition = 'transform 1.5s cubic-bezier(0.5, 0, 1, 1)';
                 charWrap.style.transform = 'translateY(150vh) rotate(540deg)';
-                
                 setTimeout(gameOver, 1600);
             }, 600);
         } else {
@@ -730,7 +755,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 let t = TASKS[currentLvl];
                 if(t.type === 'input') document.getElementById('t-inp').value = '';
                 if(t.type === 'order') Array.from(document.getElementById('o-drop').children).forEach(c => document.getElementById('o-pool').appendChild(c));
-                
                 isTransitioning = false; startLevelTimer();
             }, 800);
         }
@@ -740,7 +764,6 @@ window.addEventListener('DOMContentLoaded', () => {
         clearInterval(timerInt); quizCont.classList.remove('show');
         document.getElementById('screen-over').classList.remove('elt-hidden');
     }
-
     function winGame() {
         clearInterval(timerInt); quizCont.classList.remove('show');
         if(sfxBg) sfxBg.pause(); 
@@ -766,7 +789,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
         let previewTimeout;
-        function debounceGenerate() { clearTimeout(previewTimeout); previewTimeout = setTimeout(generateCode, 800); }
+        function debounceGenerate() { clearTimeout(previewTimeout); previewTimeout = setTimeout(generateCode, 500); }
 
         document.querySelectorAll('input:not([type="range"]), select, textarea, input[type="checkbox"]').forEach(el => {
             el.addEventListener('input', debounceGenerate);
@@ -776,10 +799,6 @@ window.addEventListener('DOMContentLoaded', () => {
              el.addEventListener('input', debounceGenerate);
         });
 
-        updateVal('charSize', 'charSizeVal', '%');
-        updateVal('flyingCoinSize', 'coinSizeVal', 'px');
-        updateVal('charVerticalPos', 'charVerticalPosVal', 'vh');
-        debounceGenerate();
     </script>
 </body>
 </html>
